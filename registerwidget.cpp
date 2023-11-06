@@ -16,7 +16,7 @@ registerWidget::~registerWidget()
 
 void registerWidget::on_register_back_Button_clicked()
 {
-    emit backToLogin(2);
+    emit backToLogin();
     this->hide();
 }
 
@@ -24,6 +24,8 @@ void registerWidget::on_register_back_Button_clicked()
 void registerWidget::on_register_confirm_Button_clicked()
 {
     emit registed_and_Login();
+    // 确认注册
+
     this->hide();
 }
 

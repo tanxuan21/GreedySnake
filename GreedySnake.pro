@@ -13,13 +13,16 @@ SOURCES += \
     game.cpp \
     login.cpp \
     main.cpp \
-    registerwidget.cpp
+    registerwidget.cpp \
+    userdata.cpp
 
 HEADERS += \
     begin.h \
+    config.h \
     game.h \
     login.h \
-    registerwidget.h
+    registerwidget.h \
+    userdata.h
 
 FORMS += \
     begin.ui \

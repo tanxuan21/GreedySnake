@@ -19,9 +19,8 @@ login::login(QWidget *parent) :
         beginGame->hide();
     });
     // 注册 (返回)-> 登录
-    connect(registerWid,&registerWidget::backToLogin,this,[=](int a){
+    connect(registerWid,&registerWidget::backToLogin,this,[=](){
         this->show();
-        qDebug()<<"带参信号"<<a<<Qt::endl;
         registerWid->hide();
     });
     // 注册 -> 登录

@@ -23,7 +23,7 @@ private slots:
 private:
     Ui::registerWidget *ui;
 signals:
-    void backToLogin(int a);
+    void backToLogin();
     void registed_and_Login();
 };
 
