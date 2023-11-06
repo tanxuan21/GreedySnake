@@ -1,0 +1,96 @@
+## 设计师界面控件在源码里使用
+#### 本类访问本类ui控件
+注意到头文件里有:
+```cpp
+private:
+    Ui::MyQWidget *ui;
+```
+通过指针ui访问控件即可.
+```cpp
+qDebug()<<"访问ui.h内的控件"<<ui->loginlogin_Button->text();
+```
+#### 其他ui控件作为本类组件
+不管什么ui不ui的.直接把头文件导进来.
+直接当作普通类对象用就行了.
+
+## 布局
+## 信号和槽
+#### 信号
+```cpp
+class Q1{
+signals:
+    void mySignal(int param);
+}
+```
+信号函数不需要实现.
+
+#### 槽
+```cpp
+#include "./Q1.h"
+class Q2{
+    Q2(){
+        q1 = new Q1();
+        connect(q1,&Q1::mySignal,this,[=](int param){
+            this->show();
+        })
+    }
+    private:
+        Q1 *q1;
+}
+```
+主要是函数`connect`
+```cpp
+connect(信号对象指针,信号函数,处理信号对象指针,槽函数);
+```
+emit信号函数里的参数是什么,它就会传递给槽函数的参数.
+一些问题:
+- **匿名函数**是比较好的槽函数的选择.简单逻辑时建议使用.
+- 信号槽函数有重载时,connect时会有问题.
+```cpp
+class Me{
+public slots: 
+    void eat(); 
+    void eat(QString somthing); 
+signals: 
+    void hungury(); 
+    void hungury(QString somthing); 
+};
+```
+这时候如果直接绑定:
+```cpp
+Me me;
+// Qt4处理方式  注意不要把信号与槽的名字写错了，因为是转为字符串写错了不会报错，但是连接会失败
+connect(&me, SIGNAL(eat()), &me, SLOT(hungury()));
+connect(&me, SIGNAL(eat(QString)), &me, SLOT(hungury(QString)));
+​
+// Qt5处理方式
+connect(&me, &Me::eat, &me, &Me::hungury);    // error:no matching member function for call to 'connect'
+```
+Qt4肯定不会报错,字符串强转没有二义性问题.
+> 不要使用Qt4的connect方式.虽然它在Qt5中也是兼容的.Qt6不兼容.
+> Qt4是通过字符串来绑定信号和槽,它不在编译阶段检查错误.(但是在运行时会出错.并且很难定位问题).Qt5通过函数指针来绑定信号和槽,在编译阶段就会检查错误.
+
+但是Qt5的指针就会有二义性问题.我们通过函数指针可以处理这个问题:
+```cpp
+//信号
+void (Me::*funchungury)() = &Me::hungury;
+void (Me::*funchungury_QString)(QString) = &Me::hungury;
+//槽
+void (Me::*funceat)() = &Me::eat;
+void (Me::*funceat_QString)(QString) = &Me::eat;
+//有参连接
+connect(me,funchungury_QString,me,funceat_QString);
+//无参连接
+connect(me,funchungury,me,funceat);
+```
+Qt自己的重载类也可以解决这个问题.
+**推荐使用Qt自己的重载类**.
+
+```cpp
+//有参连接
+connect(this,QOverload<QString>::of(&MyButton::hungury),this,QOverload<QString>::of(&MyButton::eat));
+//无参连接
+connect(this,QOverload<>::of(&MyButton::hungury),this,QOverload<>::of(&MyButton::eat));
+```
+
+[参考链接](https://blog.csdn.net/m0_73443478/article/details/127796389)
