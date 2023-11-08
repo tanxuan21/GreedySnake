@@ -1,13 +1,13 @@
-#include "login.h"
+#include "./LoginRegiste/login.h"
 #include <QDebug>
 #include <QApplication>
-#include "./userdata.h"
+#include "./dataHandler/userdata.h"
 #include "./config.h"
 int main(int argc, char *argv[])
 {
-    userData user("txdnajflkb","123");
-    user.writeInDataBase();
-    qDebug()<<userData::findUser("tx");
+//    userData user("txdnajflkb","123");
+//    user.writeInDataBase();
+//    qDebug()<<userData::findUser("tx");
 
     QApplication a(argc, argv);
     login w;
