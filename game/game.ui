@@ -28,6 +28,10 @@
        <height>16777215</height>
       </size>
      </property>
+     <property name="styleSheet">
+      <string notr="true">
+background-color: rgb(146, 146, 146);</string>
+     </property>
     </widget>
    </item>
    <item>

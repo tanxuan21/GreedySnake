@@ -35,3 +35,9 @@ void begin::on_begin_startNewGame_Button_clicked()
     emit newGame();
 }
 
+
+void begin::on_begin_startFromSave_button_clicked()
+{
+    emit startFromSave();
+}
+

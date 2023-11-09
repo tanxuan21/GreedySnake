@@ -6,6 +6,7 @@
 #include "../game/game.h"
 #include "../setting/setting.h"
 #include "./begin.h"
+#include "./picksave.h"
 #include <QScrollArea>
 class startGame : public QWidget
 {
@@ -18,6 +19,7 @@ private:
     Setting *setting;
     begin *beginwidget;
     QScrollArea *scrollWidget;
+    pickSave *pickSaveWidget;
 signals:
     void backToLogin();
 protected:

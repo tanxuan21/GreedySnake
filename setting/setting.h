@@ -14,7 +14,10 @@ class Setting : public QWidget
 public:
     explicit Setting(QWidget *parent = nullptr);
     ~Setting();
+    // 配置数据结构体
+    struct setting{
 
+    };
 private slots:
     void on_setting_confirmsetting_button_clicked();
 

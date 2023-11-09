@@ -22,12 +22,15 @@ private slots:
 
     void on_begin_startNewGame_Button_clicked();
 
+    void on_begin_startFromSave_button_clicked();
+
 private:
     Ui::begin *ui;
 signals:
-    void toSetting();
-    void backToLogin();
-    void newGame();
+    void toSetting();// 打开设置界面
+    void backToLogin();// 返回登录界面
+    void newGame();// 新游戏
+    void startFromSave();// 存档选择界面
 };
 
 #endif // BEGIN_H
