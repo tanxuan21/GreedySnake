@@ -20,6 +20,8 @@ private:
     begin *beginwidget;
     QScrollArea *scrollWidget;
     pickSave *pickSaveWidget;
+    void createSetting();
+    int settingBackmodel=0;
 signals:
     void backToLogin();
 protected:
@@ -27,6 +29,7 @@ protected:
 private slots:
     void on_begin_loginOut_button_clicked();
     void on_begin_startNewGame_Button_clicked();
+
 };
 
 #endif // STARTGAME_H

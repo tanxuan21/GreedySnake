@@ -21,7 +21,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QWidget" name="gameArea" native="true">
+    <widget class="gameMap" name="gameArea" native="true">
      <property name="maximumSize">
       <size>
        <width>16777215</width>
@@ -29,8 +29,7 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">
-background-color: rgb(146, 146, 146);</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
@@ -68,6 +67,14 @@ background-color: rgb(146, 146, 146);</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>gameMap</class>
+   <extends>QWidget</extends>
+   <header>./game/gamemap.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

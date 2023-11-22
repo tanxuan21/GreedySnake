@@ -22,6 +22,11 @@ private:
     Ui::pickSave *ui;
 signals:
     void backToBegin();
+
+    void continuePaly(int);
+    void review(int);
+    void deleteMap(int);
+    void reSet(int);
 };
 
 #endif // PICKSAVE_H

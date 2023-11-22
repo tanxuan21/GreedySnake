@@ -26,4 +26,5 @@ include(./setting/setting.pri)
 include(./LoginRegiste/LoginRegiste.pri)
 include(./dataHandler/dataHandler.pri)
 include(./game/game.pri)
+include(./tool/tool.pri)
 
