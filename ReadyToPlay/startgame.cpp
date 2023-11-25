@@ -91,7 +91,7 @@ startGame::startGame(QWidget *parent)
         this->hide();
     });
     connect(pickSaveWidget,&pickSave::deleteMap,this,[=](int MapId){
-        qDebug()<<MapId<<"删除地图";
+        // 要在文件里也删了.不可能只是做个界面罢了.
 
     });
     connect(pickSaveWidget,&pickSave::reSet,this,[=](int MapId){
@@ -103,7 +103,12 @@ startGame::startGame(QWidget *parent)
 }
 
 startGame::~startGame(){
-        delete game;
+    delete game;
+}
+
+void startGame::setUser(QString username)
+{
+    beginwidget->setUser("用户: "+username);
 }
 
 // resize事件

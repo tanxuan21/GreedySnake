@@ -17,6 +17,7 @@ public:
     void init();
     void setMapID(int id){this->MapID = id;};
     int getMapID(){return this->MapID;};
+    void setImgTest(QString);
 private slots:
     void on_saveItem_continuePlay_button_clicked();
     void on_saveItem_review_button_clicked();

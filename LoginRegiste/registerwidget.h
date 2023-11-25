@@ -2,7 +2,7 @@
 #define REGISTERWIDGET_H
 
 #include <QWidget>
-
+#include "../dataHandler/userdata.h"
 namespace Ui {
 class registerWidget;
 }
@@ -24,7 +24,7 @@ private:
     Ui::registerWidget *ui;
 signals:
     void backToLogin();
-    void registed_and_Login();
+    void registed_and_Login(userData);
 };
 
 #endif // REGISTERWIDGET_H

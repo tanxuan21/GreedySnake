@@ -67,7 +67,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_2">
+          <widget class="QLineEdit" name="username_lineEdit">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -95,7 +95,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit">
+          <widget class="QLineEdit" name="password_LineEdit">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -105,6 +105,13 @@
           </widget>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="info">
+        <property name="text">
+         <string/>
+        </property>
        </widget>
       </item>
      </layout>

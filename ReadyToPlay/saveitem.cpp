@@ -13,6 +13,11 @@ saveItem::~saveItem()
     delete ui;
 }
 
+void saveItem::setImgTest(QString s)
+{
+    ui->saveItem_gameImg_label->setText(s);
+}
+
 // 继续游戏
 void saveItem::on_saveItem_continuePlay_button_clicked()
 {

@@ -7,6 +7,7 @@ Game::Game(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Game)
 {
+
     ui->setupUi(this);
     // 设置窗口title
     this->setWindowTitle("游戏");
@@ -14,6 +15,7 @@ Game::Game(QWidget *parent) :
     connect(timer,&QTimer::timeout,this,&Game::update);
     timer->start(10);
 
+    timer->stop();
     // 蛇身测试代码
     this->snackU = new SnakeUnit(ui->gameArea);
 //    this->snack->setStyleSheet("background-color:black;");
@@ -27,6 +29,7 @@ Game::Game(QWidget *parent) :
 
 Game::~Game()
 {
+
 
     delete ui;
 }

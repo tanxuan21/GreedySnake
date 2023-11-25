@@ -14,6 +14,7 @@ class startGame : public QWidget
 public:
     explicit startGame(QWidget *parent = nullptr);
     ~startGame();
+    void setUser(QString);
 private:
     Game *game;
     Setting *setting;

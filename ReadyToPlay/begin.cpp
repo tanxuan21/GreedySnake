@@ -7,7 +7,11 @@ begin::begin(QWidget *parent) :
 
     ui->setupUi(this);
 
+}
 
+void begin::setUser(QString username)
+{
+    ui->begin_user_label->setText(username);
 }
 
 begin::~begin()

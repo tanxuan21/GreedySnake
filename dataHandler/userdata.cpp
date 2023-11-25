@@ -19,7 +19,6 @@ int userData::writeInDataBase()
 //    qDebug()<<currentPath;
     // 找到了用户就返回错误
     if(userData::findUser(this->username)){
-        qDebug()<<"用户已存在";
         return 0;
     }
     QFile userDataBase(QString(projectPath)+"/data/user.txt");
@@ -39,8 +38,9 @@ userData *userData::findUser(const QString &username)
         QString usernameFromDataBase = userDataBase.readLine();
         usernameFromDataBase = usernameFromDataBase.chopped(1);// 删掉结尾的\n
         if(usernameFromDataBase == username){
-            user = new userData(usernameFromDataBase,QString(userDataBase.readLine()));
-            qDebug()<<"找到了!";
+            QString userpasswordFromDataBase = userDataBase.readLine();
+            userpasswordFromDataBase = userpasswordFromDataBase.chopped(1);
+            user = new userData(usernameFromDataBase,userpasswordFromDataBase);
             break;
         }
     }

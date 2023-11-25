@@ -13,6 +13,7 @@ class begin : public QWidget
 
 public:
     explicit begin(QWidget *parent = nullptr);
+    void setUser(QString);
     ~begin();
 
 private slots:
