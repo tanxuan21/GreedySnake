@@ -7,7 +7,9 @@ class Record
 public:
     Record();
     ~Record();
-
+    // 读入回放对象
+    static Record* readrecord(QString path);
+    static void writeRecord(QString path,Record *);
 private:
 
 };

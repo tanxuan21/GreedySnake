@@ -25,8 +25,8 @@ login::login(QWidget *parent) :
         registerWid->hide();
     });
     // 注册 -> 登录
-    connect(registerWid,&registerWidget::registed_and_Login,this,[=](userData user){
-        start_game->setUser(user.getUsername());
+    connect(registerWid,&registerWidget::registed_and_Login,this,[=](userData *user){
+        start_game->setUser(user);
         start_game->show();
     });
     // 设置窗口title
@@ -62,14 +62,14 @@ void login::on_loginlogin_Button_clicked()
     else
     {
         // 如果找到了,就验证密码.
-        userData *user = userData::findUser(ui->username_lineEdit->text().trimmed());
+        this->user = userData::findUser(ui->username_lineEdit->text().trimmed());
         if(user){
             if(user->getpassword() == ui->password_LineEdit->text()){
 
                 ui->username_lineEdit->setText("");
                 ui->password_LineEdit->setText("");
                 start_game->show();
-                start_game->setUser(user->getUsername());
+                start_game->setUser(user);
                 this->hide();
                 // 注意要把信息去掉.
 

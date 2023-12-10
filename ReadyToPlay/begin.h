@@ -2,7 +2,7 @@
 #define BEGIN_H
 
 #include <QWidget>
-
+#include "dataHandler/userdata.h"
 namespace Ui {
 class begin;
 }
@@ -13,7 +13,7 @@ class begin : public QWidget
 
 public:
     explicit begin(QWidget *parent = nullptr);
-    void setUser(QString);
+    void setUser(userData *);
     ~begin();
 
 private slots:
@@ -26,6 +26,7 @@ private slots:
     void on_begin_startFromSave_button_clicked();
 
 private:
+    userData *user;
     Ui::begin *ui;
 signals:
     void toSetting();// 打开设置界面

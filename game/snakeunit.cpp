@@ -8,7 +8,6 @@ SnakeUnit::SnakeUnit(QWidget *parent)
 //    palette.setColor(QPalette::Window, Qt::red);
 //    this->setPalette(palette);
 
-
 }
 
 void SnakeUnit::setSize(const int &s)
@@ -20,6 +19,6 @@ void SnakeUnit::setSize(const int &s)
 void SnakeUnit::paintEvent(QPaintEvent *)
 {
     QPainter painter = QPainter(this);
-    painter.setBrush(Qt::red);
+    painter.setBrush(QColor(10,200,100));
     painter.drawRect(0,0,this->width(),this->height());
 }

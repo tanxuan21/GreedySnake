@@ -36,8 +36,8 @@ void registerWidget::on_register_confirm_Button_clicked()
     QRegularExpressionMatch matchPassword = reg.match(password);
 
     if((!(matchUser.hasMatch()))&&(!(matchPassword.hasMatch()))){
-        userData user(username,password);// 创建对象.
-        if(user.writeInDataBase()){// 写入.
+        userData *user = new userData(username,password);// 创建对象.
+        if(user->writeInDataBase()){// 写入.
             ui->username_lineEdit->setText("");
             ui->password_lineEdit->setText("");
             ui->info->setText("");

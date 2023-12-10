@@ -60,140 +60,23 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QWidget" name="widget" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="label">
-              <property name="font">
-               <font>
-                <pointsize>17</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>难度                 </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSlider" name="horizontalSlider">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="spinBox"/>
-            </item>
-           </layout>
+          <widget class="InputComponent" name="game_difficult" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>30</height>
+            </size>
+           </property>
           </widget>
          </item>
          <item>
-          <widget class="QWidget" name="widget_2" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="label_2">
-              <property name="font">
-               <font>
-                <pointsize>17</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>食物量             </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSlider" name="horizontalSlider_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="spinBox_2"/>
-            </item>
-           </layout>
-          </widget>
+          <widget class="InputComponent" name="food_count" native="true"/>
          </item>
          <item>
-          <widget class="QWidget" name="widget_9" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="label_6">
-              <property name="font">
-               <font>
-                <pointsize>17</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>随机种子         </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSlider" name="horizontalSlider_6">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
-            </item>
-           </layout>
-          </widget>
+          <widget class="InputComponent" name="randSeed" native="true"/>
          </item>
          <item>
-          <widget class="QWidget" name="widget_3" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="label_3">
-              <property name="font">
-               <font>
-                <pointsize>17</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>食物生成概率 </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSlider" name="horizontalSlider_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
-            </item>
-           </layout>
-          </widget>
+          <widget class="InputComponent" name="food_generation_pro" native="true"/>
          </item>
         </layout>
        </widget>
@@ -229,89 +112,24 @@
              <height>30</height>
             </size>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
             <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
              <number>0</number>
             </property>
             <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
-             <widget class="QLabel" name="label_4">
-              <property name="font">
-               <font>
-                <pointsize>17</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>长</string>
-              </property>
-             </widget>
+             <widget class="InputComponent" name="map_width" native="true"/>
             </item>
             <item>
-             <widget class="QSlider" name="horizontalSlider_4">
-              <property name="minimumSize">
-               <size>
-                <width>100</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>20</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_7">
-              <property name="font">
-               <font>
-                <pointsize>17</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>宽</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSlider" name="horizontalSlider_7">
-              <property name="minimumSize">
-               <size>
-                <width>100</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_10">
-              <property name="text">
-               <string>20</string>
-              </property>
-             </widget>
+             <widget class="InputComponent" name="map_height" native="true"/>
             </item>
            </layout>
           </widget>
@@ -333,53 +151,101 @@
                 <height>200</height>
                </size>
               </property>
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="up_wall">
                <property name="geometry">
                 <rect>
                  <x>50</x>
                  <y>0</y>
                  <width>100</width>
-                 <height>32</height>
+                 <height>40</height>
                 </rect>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>40</height>
+                </size>
                </property>
                <property name="text">
                 <string>上</string>
                </property>
               </widget>
-              <widget class="QPushButton" name="pushButton_2">
+              <widget class="QPushButton" name="down_wall">
                <property name="geometry">
                 <rect>
                  <x>50</x>
-                 <y>130</y>
+                 <y>120</y>
                  <width>100</width>
-                 <height>32</height>
+                 <height>40</height>
                 </rect>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>40</height>
+                </size>
                </property>
                <property name="text">
                 <string>下</string>
                </property>
               </widget>
-              <widget class="QPushButton" name="pushButton_3">
+              <widget class="QPushButton" name="left_wall">
                <property name="geometry">
                 <rect>
-                 <x>0</x>
-                 <y>40</y>
-                 <width>21</width>
-                 <height>91</height>
+                 <x>10</x>
+                 <y>30</y>
+                 <width>30</width>
+                 <height>100</height>
                 </rect>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>30</width>
+                 <height>100</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>30</width>
+                 <height>100</height>
+                </size>
                </property>
                <property name="text">
                 <string>左</string>
                </property>
               </widget>
-              <widget class="QPushButton" name="pushButton_4">
+              <widget class="QPushButton" name="right_wall">
                <property name="geometry">
                 <rect>
-                 <x>170</x>
-                 <y>40</y>
-                 <width>21</width>
-                 <height>91</height>
+                 <x>160</x>
+                 <y>30</y>
+                 <width>30</width>
+                 <height>100</height>
                 </rect>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>30</width>
+                 <height>100</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>30</width>
+                 <height>100</height>
+                </size>
                </property>
                <property name="text">
                 <string>右</string>
@@ -391,47 +257,17 @@
           </widget>
          </item>
          <item>
-          <widget class="QWidget" name="widget_10" native="true">
+          <widget class="InputComponent" name="block_continuous" native="true">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
              <height>30</height>
             </size>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_9">
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="label_8">
-              <property name="font">
-               <font>
-                <pointsize>17</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>障碍物连续性</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSlider" name="horizontalSlider_8">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="spinBox_4"/>
-            </item>
-           </layout>
           </widget>
          </item>
          <item>
-          <widget class="QWidget" name="widget_6" native="true">
+          <widget class="InputComponent" name="block_count" native="true">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -445,28 +281,6 @@
             <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item>
-             <widget class="QLabel" name="label_5">
-              <property name="font">
-               <font>
-                <pointsize>17</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>障碍物数量    </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSlider" name="horizontalSlider_5">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="spinBox_3"/>
-            </item>
            </layout>
           </widget>
          </item>
@@ -568,6 +382,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>InputComponent</class>
+   <extends>QWidget</extends>
+   <header location="global">setting/inputcomponent.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

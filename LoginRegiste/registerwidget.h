@@ -24,7 +24,7 @@ private:
     Ui::registerWidget *ui;
 signals:
     void backToLogin();
-    void registed_and_Login(userData);
+    void registed_and_Login(userData*);
 };
 
 #endif // REGISTERWIDGET_H

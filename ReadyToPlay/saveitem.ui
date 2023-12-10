@@ -16,6 +16,12 @@
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QLabel" name="saveItem_gameImg_label">
+     <property name="minimumSize">
+      <size>
+       <width>50</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(195, 237, 230);</string>
      </property>

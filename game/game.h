@@ -5,6 +5,10 @@
 #include "./snakeunit.h"
 #include <QQueue>
 #include <QTimer>
+#include "config.h"
+#include "./gameinfo.h"
+#include "dataHandler/userdata.h"
+#include "./gameprops.h"
 namespace Ui {
 class Game;
 }
@@ -16,30 +20,72 @@ class Game : public QWidget
 public:
     explicit Game(QWidget *parent = nullptr);
     ~Game();
-
+    void setSettingData(settingData* s){this->setting = s;}
+    void setMapID(int i){this->MapID = i;}
+    void setUser(userData *user);
+    void setGameOption(int MapID,settingData *setting,Map *map,Record *record);
 private slots:
     void on_pushButton_clicked();
 
 private:
     Ui::Game *ui;
-    SnakeUnit *snackU;
+    // 测试
+    gameProps *pros;
 
 
-    QQueue<SnakeUnit> snack;
+    // 用户数据
+    userData *user;
+    // 游戏数据区
+    gameProps *snackHead;
+    gameProps *snackTail;
+
+    settingData *setting;
+    int MapID  = -1;
+    Map *map;
+    Record *record;
+    bool lasttouchingEdg = false;
+    bool touchingEdg  =false;// 是否碰到每个格子边.因为游戏帧过于密集,可能在边界重复调用update里面的函数.需要做防抖.
+    // 蛇队列
+    QQueue<gameProps*> snack;
+    // 界面
+    gameInfo* infoWidget;
+    int UnitSize = 50;
+    void setUnitSize(int size);
+    // ==================游戏主流程========================
     // 游戏时钟
     QTimer *timer;
     bool IsPause = true;
+    // 切换暂停继续
     void switchPause(){
         IsPause = !IsPause;
-        if(IsPause){timer->start();}
-        else{timer->stop();}
+        if(IsPause){timer->start();infoWidget->hide();}
+        else{timer->stop();infoWidget->show();}
     }
     void update();// 游戏每帧调用
+
+    void init();// 根据设置对象,地图对象初始化游戏设置.
+    int collision();// 返回1说明碰到食物.返回0说明碰到障碍、边界、自己等等.反正,返回0游戏结束.返回1吃到食物.
+    void updatePosition();
+    void failed();
+
+    void release();// 释放所有资源.
+    //====================================================
+    // ================API====================
+    // 控制蛇移动
+    //int direction = Qt::Key_Up;//方向.蛇这一帧怎么走根据这个值来判断
+    int NextX = 1,NextY = 0;
+    int NextX_ = 1,NextY_ = 0;
+    void calculateNextX_Y();
+    // 生成食物
+    QList<gameProps *> foodList;
+    void generalFood();
+    QPoint KeydirToDirection(gameProps *p);
 signals:
     void backToBegin();
 protected:
     void keyPressEvent(QKeyEvent *);
     void paintEvent(QPaintEvent*);
+    void resizeEvent(QResizeEvent *);
 };
 
 #endif // GAME_H

@@ -7,6 +7,7 @@
 #include "../setting/setting.h"
 #include "./begin.h"
 #include "./picksave.h"
+#include "dataHandler/userdata.h"
 #include <QScrollArea>
 class startGame : public QWidget
 {
@@ -14,23 +15,28 @@ class startGame : public QWidget
 public:
     explicit startGame(QWidget *parent = nullptr);
     ~startGame();
-    void setUser(QString);
+    void setUser(userData*);
 private:
     Game *game;
     Setting *setting;
     begin *beginwidget;
     QScrollArea *scrollWidget;
     pickSave *pickSaveWidget;
+
+    userData *user;
+    settingData *setting_data = new settingData();
+    Map *map= 0;
+    Record *record = 0;
+
     void createSetting();
     int settingBackmodel=0;
+
+    int CurrentMapID = 0;
+
 signals:
     void backToLogin();
 protected:
     void resizeEvent(QResizeEvent *);
-private slots:
-    void on_begin_loginOut_button_clicked();
-    void on_begin_startNewGame_Button_clicked();
-
 };
 
 #endif // STARTGAME_H

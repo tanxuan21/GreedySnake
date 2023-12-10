@@ -53,6 +53,13 @@
           </spacer>
          </item>
          <item>
+          <widget class="QPushButton" name="pickSave_refresh_button">
+           <property name="text">
+            <string>刷新</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="pickSave_back_button">
            <property name="text">
             <string>返回</string>

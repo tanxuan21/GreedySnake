@@ -1,13 +1,13 @@
 #ifndef TOOL_H
 #define TOOL_H
-
+#include <QDir>
+#include <QFile>
 
 class tool
 {
 public:
     tool();
-    int randomInt(int,int);
-
+    static int randomInt(int,int);
 };
 
 #endif // TOOL_H

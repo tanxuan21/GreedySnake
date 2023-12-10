@@ -30,6 +30,7 @@ private:
     Ui::login *ui;
     startGame *start_game;
     registerWidget *registerWid;
+    userData *user;
 };
 
 #endif // LOGIN_H

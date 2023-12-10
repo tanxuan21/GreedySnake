@@ -2,6 +2,9 @@
 #include "begin.h"
 #include <QScrollArea>
 #include "./picksave.h"
+#include "config.h"
+#include <QDir>
+#include <QFile>
 startGame::startGame(QWidget *parent)
     : QWidget{parent}
 {
@@ -49,6 +52,8 @@ startGame::startGame(QWidget *parent)
     connect(beginwidget,&begin::newGame,this,[=](){
         this->hide();
         this->game->show();
+        this->game->setGameOption(-1,this->setting_data,0,0);
+        qDebug()<<this->setting_data;
     });
 
     // 开始游戏界面 -> 设置界面
@@ -57,13 +62,14 @@ startGame::startGame(QWidget *parent)
         this->beginwidget->hide();
         this->scrollWidget->show();
     });
-    // 设置界面 -> 开始游戏界面
+    // 设置界面 -> 返回
     connect(setting,&Setting::toStartGame,this,[=](){// Backmodel管理返回的界面是什么.
         if(settingBackmodel == 0){
             this->beginwidget->show();
         }
         else if(settingBackmodel == 1){
             this->pickSaveWidget->show();
+            pickSaveWidget->readMap(this->user);
         }
         this->scrollWidget->close();
     });
@@ -71,44 +77,90 @@ startGame::startGame(QWidget *parent)
     connect(beginwidget,&begin::startFromSave,this,[=](){
         this->beginwidget->hide();
         this->pickSaveWidget->show();
+        pickSaveWidget->readMap(this->user);
         settingBackmodel = 1;
     });
     // 存档列表界面 -> 开始游戏界面
     connect(pickSaveWidget,&pickSave::backToBegin,this,[=](){
         this->beginwidget->show();
         this->pickSaveWidget->hide();
+        this->CurrentMapID = -1;
+        // 原来的没用了.不要让存档里的设置影响到新游戏的设置.
+        delete setting_data;
+        this->setting_data = new settingData();
+        this->setting->writeSettingDataToComponent(this->setting_data);
         settingBackmodel = 0;
     });
     // 存档列表界面 -> *
+    // 继续游戏
     connect(pickSaveWidget,&pickSave::continuePaly,this,[=](int MapId){
-        qDebug()<<MapId<<"继续游戏";
+        this->CurrentMapID = MapId;
+        if(map != 0){
+            delete map;
+
+        }
+        if(record != 0){
+            delete record;
+        }
+        map = user->readMap(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+this->user->getUsername()+".map");
+        record = user->readrecord(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+this->user->getUsername()+".rec");
+        this->game->setGameOption(MapId,setting_data,map,record);
         this->game->show();
         this->hide();
     });
+    // 回放
     connect(pickSaveWidget,&pickSave::review,this,[=](int MapId){
         qDebug()<<MapId<<"回放";
+        this->CurrentMapID = MapId;
+        if(map != 0){
+            delete map;
+
+        }
+        if(record != 0){
+            delete record;
+        }
+        map = user->readMap(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+this->user->getUsername()+".map");
+        record = user->readrecord(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+this->user->getUsername()+".rec");
+        this->game->setGameOption(MapId,setting_data,map,record);
         this->game->show();
         this->hide();
     });
+    // 删除存档
     connect(pickSaveWidget,&pickSave::deleteMap,this,[=](int MapId){
         // 要在文件里也删了.不可能只是做个界面罢了.
-
+        user->deleteuserMapFolder(MapId);
     });
+    // 刷新地图列表.
+    connect(pickSaveWidget,&pickSave::refreshMapList,this,[=](){
+        pickSaveWidget->readMap(this->user);
+    });
+    // 重新设置存档游戏
     connect(pickSaveWidget,&pickSave::reSet,this,[=](int MapId){
-        qDebug()<<MapId<<"重设";
+        this->CurrentMapID = MapId;
         this->scrollWidget->show();
         this->pickSaveWidget->hide();
+        // 设置界面要与文件保持一致
+        this->setting_data = setting->readSettingDataFromFolder(QString(projectPath)+"data/game/"+user->getUsername()+"/"+QString::number(CurrentMapID)+"/"+user->getUsername()+".config");
+        Setting::debugSettingData(setting_data);
+        setting->writeSettingDataToComponent(setting_data);
     });
-
+    // 拿到设置结构体
+    connect(setting,&Setting::emitSettingData,this,[=](settingData* setting){
+        this->setting_data = setting;
+        user->writeSettingData(QString(projectPath)+"data/game/"+user->getUsername()+"/"+QString::number(CurrentMapID)+"/"+user->getUsername()+".config",this->setting_data);
+    });
 }
 
 startGame::~startGame(){
     delete game;
 }
 
-void startGame::setUser(QString username)
+void startGame::setUser(userData * user)
 {
-    beginwidget->setUser("用户: "+username);
+    this->user = user;
+    beginwidget->setUser(this->user);
+    game->setUser(this->user);
+
 }
 
 // resize事件
@@ -128,18 +180,6 @@ void startGame::resizeEvent(QResizeEvent *)
     }
 }
 
-
-void startGame::on_begin_loginOut_button_clicked()
-{
-    emit backToLogin();
-}
-
-
-void startGame::on_begin_startNewGame_Button_clicked()
-{
-    game->show();
-    this->hide();
-}
 
 void startGame::createSetting()
 {

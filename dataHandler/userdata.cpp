@@ -4,6 +4,7 @@
 #include <QDir>
 #include "./config.h"
 #include <QTextStream>
+#include "setting/setting.h"
 userData::userData(const QString &username,const QString &password)
 {
 this->username = username;
@@ -45,4 +46,102 @@ userData *userData::findUser(const QString &username)
         }
     }
     return user;
+}
+
+QString userData::getPath()
+{
+    return QString(projectPath) + "data/game/"+this->username;
+}
+
+QStringList userData::readuserMapFolder()
+{
+    QString Mappath = QString(projectPath) + "data/game/"+this->username;// 这个路径的子文件夹就是地图数据.全部读出来看看
+    QDir userMapDataBase(Mappath);
+    QStringList ls = userMapDataBase.entryList();
+    ls.removeOne(".");
+    ls.removeOne("..");
+    return ls;
+}
+
+bool userData::deleteuserMapFolder(int MapID)
+{
+    QString path = QString(projectPath)+"data/game/"+this->username+"/"+QString::number(MapID);
+    return QDir(path).removeRecursively();
+}
+
+int userData::createNewMapFolder()
+{
+    QString gameMapPath = QString(projectPath) + "data/game/"+this->username+"/";
+
+    for(int i = 0;;i++){
+        qDebug()<<gameMapPath+QString::number(i);
+        if(!(QDir().exists(gameMapPath+QString::number(i)))){// 不存在就创建.然后退出循环.
+            qDebug()<<QDir().mkpath(gameMapPath+QString::number(i));
+            return i;
+        }
+    }
+}
+
+bool userData::saveMap(const int &MapID, Map *map, settingData *settingdata, Record *record)
+{
+    // 只是缺后缀
+    QString path = QString(projectPath)+"data/game/"+this->username+"/"+QString::number(MapID)+"/"+username;
+    writeMap(path+".map",map);
+    writeRecord(path+".rec",record);
+    writeSettingData(path+".config",settingdata);
+    QDateTime now = QDateTime::currentDateTime();
+    QString time = now.toString("yyyy-MM-dd HH:mm:ss");
+    writeTime(path+".time",time);
+    return true;
+}
+
+void userData::writeSettingData(QString path,settingData *settingData)
+{
+   Setting::writeSettingDataToFolder(settingData,path);
+}
+
+Map* userData::readMap(QString path)
+{
+    return Map::LoadMap(path);
+}
+
+Map* userData::createMap(settingData *s)
+{
+    return Map::createMap(s);
+}
+
+void userData::writeMap(QString path,Map *map)
+{
+
+}
+
+Record *userData::readrecord(QString path)
+{
+    return Record::readrecord(path);
+}
+
+void userData::writeRecord(QString path, Record *)
+{
+
+}
+
+void userData::writeTime(QString path,QString time)
+{
+    QFile userDataBase(path);
+    userDataBase.open(QIODevice::WriteOnly);
+    QTextStream writeStream(&userDataBase);
+    writeStream<<time;
+    userDataBase.close();
+}
+
+QString userData::readTime(QString path)
+{
+    QFile userDataBase(path);
+    userDataBase.open(QIODevice::ReadOnly);
+    QTextStream readStream(&userDataBase);
+    QString time,t_;
+    readStream>>time;
+    readStream>>t_;
+    userDataBase.close();
+    return time+" "+t_;
 }

@@ -9,9 +9,9 @@ begin::begin(QWidget *parent) :
 
 }
 
-void begin::setUser(QString username)
+void begin::setUser(userData * user)
 {
-    ui->begin_user_label->setText(username);
+    ui->begin_user_label->setText("用户名:"+user->getUsername());
 }
 
 begin::~begin()
