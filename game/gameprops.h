@@ -12,9 +12,10 @@ class gameProps : public QWidget
     Q_OBJECT
 
 public:
-    explicit gameProps(QWidget *parent = nullptr);
+//    explicit gameProps(QWidget *parent = nullptr);
+    gameProps(QWidget *parent = nullptr);
     ~gameProps();
-
+    gameProps(gameProps *p,QWidget *parent);
     void setImg(QString path);
     void setColor(QColor color);
     void setSize(const int &s);

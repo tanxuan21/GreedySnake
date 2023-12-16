@@ -13,6 +13,17 @@ gameProps::~gameProps()
 {
     delete ui;
 }
+
+gameProps::gameProps(gameProps *p,QWidget *parent):
+    QWidget(parent),
+    ui(new Ui::gameProps)
+{
+    this->color = p->color;
+    this->pos() = p->pos();
+    this->direction = p->direction;
+    this->size = p->size;
+
+}
 void gameProps::setSize(const int &s)
 {
     this->size = s;

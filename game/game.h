@@ -24,8 +24,7 @@ public:
     void setMapID(int i){this->MapID = i;}
     void setUser(userData *user);
     void setGameOption(int MapID,settingData *setting,Map *map,Record *record);
-private slots:
-    void on_pushButton_clicked();
+
 
 private:
     Ui::Game *ui;
@@ -45,6 +44,8 @@ private:
     Record *record;
     bool lasttouchingEdg = false;
     bool touchingEdg  =false;// 是否碰到每个格子边.因为游戏帧过于密集,可能在边界重复调用update里面的函数.需要做防抖.
+    bool hasResized = false;// 继续(开始)是否resize过.
+    gameProps *lastTail;
     // 蛇队列
     QQueue<gameProps*> snack;
     // 界面
@@ -80,6 +81,14 @@ private:
     QList<gameProps *> foodList;
     void generalFood();
     QPoint KeydirToDirection(gameProps *p);
+    // 生成障碍物
+    QList<gameProps *> blockList;
+    void generalBlockList();
+    // ====================工具函数=======================
+    // 屏幕中的像素点 -> 位置信息
+    QPoint pixelToPos(QPoint pixel);
+    // 位置信息 -> 屏幕中的像素点
+    QPoint PosToPixel(QPoint Pos);
 signals:
     void backToBegin();
 protected:
