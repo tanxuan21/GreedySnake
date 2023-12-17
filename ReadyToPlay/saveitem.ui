@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>678</width>
-    <height>49</height>
+    <width>702</width>
+    <height>98</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,12 +18,18 @@
     <widget class="QLabel" name="saveItem_gameImg_label">
      <property name="minimumSize">
       <size>
-       <width>50</width>
-       <height>0</height>
+       <width>60</width>
+       <height>60</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>60</width>
+       <height>60</height>
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(195, 237, 230);</string>
+      <string notr="true">background-color: rgb(235, 235, 235);</string>
      </property>
      <property name="text">
       <string>游戏缩略图</string>

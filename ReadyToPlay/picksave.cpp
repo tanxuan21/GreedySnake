@@ -53,6 +53,8 @@ void pickSave::readMap(userData * user)
         // 对item进行一些初始化操作
         s->setMapID(i.toInt());
         s->setImgTest(i);
+        QPixmap img(path+"img.png");
+        s->setImg(img);
         s->setMinimumHeight(20);
         s->setLastTime(user->readTime(path+user->getUsername()+".time"));
         // 列表容器

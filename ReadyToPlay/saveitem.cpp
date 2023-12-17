@@ -15,8 +15,22 @@ saveItem::~saveItem()
 
 void saveItem::setImgTest(QString s)
 {
+
     ui->saveItem_gameImg_label->setText(s);
+
 }
+
+void saveItem::setImg(QPixmap img)
+{
+
+    //    img = img.scaled(ui->saveItem_gameImg_label->width()*2, ui->saveItem_gameImg_label->height()*2, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    //    ui->saveItem_gameImg_label->setScaledContents(true);// 撑满label
+    img = img.scaled(ui->saveItem_gameImg_label->width(),ui->saveItem_gameImg_label->height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
+
+    ui->saveItem_gameImg_label->setPixmap(img);
+    ui->saveItem_gameImg_label->setAlignment(Qt::AlignCenter);
+}
+
 
 void saveItem::setLastTime(QString s)
 {

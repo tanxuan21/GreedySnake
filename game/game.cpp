@@ -117,8 +117,8 @@ void Game::init()
 
     // 队列也可以当作数组操作.
     // 队头是数组尾.队尾是数组头.
-    setUnitSize((this->height()-120)/this->setting->mapHeight);// 动态根据尺寸设置地图单元大小.
-
+    //setUnitSize((this->height()-120)/this->setting->mapHeight);// 动态根据尺寸设置地图单元大小.
+    this->resize();
 //    for(int i = 1;i<=10;i++){
 //        qDebug()<<((1/double(i))*1000)/UnitSize;
 //    }
@@ -558,6 +558,12 @@ void Game::paintEvent(QPaintEvent *)
 void Game::resizeEvent(QResizeEvent *event)
 {
     this->hasResized = true;
+    this->resize();
+}
+
+void Game::resize()
+{
+
     //infoWidget剧中
     this->infoWidget->move((this->width()-this->infoWidget->width())/2,(this->height()-this->infoWidget->height())/2);
     // 设置撑满策略.需要地图尽可能填满整个布局组件.
@@ -570,7 +576,8 @@ void Game::resizeEvent(QResizeEvent *event)
         */
         if(this->height() <= this->width() && this->setting->mapHeight <= this->setting->mapWidth){// 同是横向长方形
             // 窗口更扁 纵向撑满.
-            if(this->height()/this->width() <= this->setting->mapHeight / this->setting->mapWidth){
+            if(double(this->height())/this->width() <= double(this->setting->mapHeight) / this->setting->mapWidth){
+                qDebug()<<"纵向";
                 setUnitSize((this->height()-120)/this->setting->mapHeight);
                 touchingEdg = true;// resize时根据每个游戏组件对象的的pos属性值来重新设置位置.
                 // 但是更新pos只在碰到格子才更新.这时resize,蛇会退回上一个格子.
@@ -578,7 +585,8 @@ void Game::resizeEvent(QResizeEvent *event)
             }
             // 窗口更纵 横向撑满
             else{
-                  ((this->width()-120)/this->setting->mapWidth);
+                qDebug()<<"横向";
+                setUnitSize((this->width()-120)/this->setting->mapWidth);
                 touchingEdg = true;
             }
         }

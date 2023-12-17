@@ -95,6 +95,8 @@ protected:
     void keyPressEvent(QKeyEvent *);
     void paintEvent(QPaintEvent*);
     void resizeEvent(QResizeEvent *);
+private:
+    void resize();
 };
 
 #endif // GAME_H
