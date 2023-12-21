@@ -29,19 +29,20 @@ Game::Game(QWidget *parent) :
     // 游戏信息界面
     // 保存游戏
     connect(infoWidget,&gameInfo::save_and_quit,this,[=](){
-
-
-        qDebug()<<"当前地图编号"<<MapID;
+        // 当前地图是存在的,就保存覆盖原有的.
         if(this->MapID>=0){
             user->saveMap(MapID,this->map,this->setting,this->record);
             QPixmap screenShot = ui->gameArea->grab();
             screenShot.save(user->getPath()+"/"+QString::number(this->MapID)+"/img.png");
+            map->writeMap(this->snack,this->foodList,this->blockList,this->snackHead,this->snackTail,user->getPath()+"/"+QString::number(this->MapID)+"/"+user->getUsername()+".map");
         }
+        // 当前地图不存在.就创建新的.
         else{
           this->MapID = user->createNewMapFolder();
           user->saveMap(MapID,this->map,this->setting,this->record);
           QPixmap screenShot = ui->gameArea->grab();
           screenShot.save(user->getPath()+"/"+QString::number(this->MapID)+"/img.png");
+          map->writeMap(this->snack,this->foodList,this->blockList,this->snackHead,this->snackTail,user->getPath()+"/"+QString::number(this->MapID)+"/"+user->getUsername()+".map");
           this->MapID = -1;
         }
         release();
@@ -79,7 +80,7 @@ void Game::setGameOption(int MapID, settingData *setting, Map *map, Record *reco
     this->setting = setting;
     this->record = record;
     this->map  = map;
-    Setting::debugSettingData(this->setting);
+    //Setting::debugSettingData(this->setting);
     // 初始化全游戏.
 
     init(); // 目前里面只有蛇身测试代码
@@ -87,6 +88,77 @@ void Game::setGameOption(int MapID, settingData *setting, Map *map, Record *reco
 // 初始化全部游戏
 void Game::init()
 {
+
+// 这一段作为测试使用
+    // 障碍物坐标
+    // QList<QPoint> this->map->blockArry;
+    // 蛇
+    // QList<snackBody> this->map->snack;
+    // 食物
+    // QList<QPoint> this->map->foodArry;
+    // snackBody this->map->snackHead(2,2,Qt::Key_D);
+//    snackBody this->map->snackTail(2,2,Qt::Key_D);
+
+//    this->map->blockArry.push_back(QPoint(1,1));
+//    this->map->blockArry.push_back(QPoint(0,0));
+//    this->map->blockArry.push_back(QPoint(2,2));
+//    this->map->blockArry.push_back(QPoint(3,3));
+
+//    this->map->snack.push_back((snackBody(2,2,Qt::Key_D)));
+//    this->map->foodArry.push_back(QPoint(9,9));
+//    this->map->foodArry.push_back(QPoint(8,8));
+
+//map->debug();
+// 这一段作为测试使用
+    for(int i = 0;i<this->map->snack.length();i++){
+        gameProps *s = new gameProps(ui->gameArea);
+        s->move(this->map->snack[i].x*UnitSize,this->map->snack[i].y*UnitSize);
+        s->setDirection(this->map->snack[i].dir);
+        s->setPos(QPoint(this->map->snack[i].x,this->map->snack[i].y));
+        s->setColor(QColor(10,200,100));
+        s->show();
+        this->snack.enqueue(s);
+    }
+    for(int i = 0;i<this->map->foodArry.length();i++){
+        gameProps *food = new gameProps(ui->gameArea);
+        food->setColor(QColor(200,100,100));
+        food->setSize(this->UnitSize);
+        food->setPos(QPoint(this->map->foodArry[i].x(),this->map->foodArry[i].y()));
+        food->move(this->map->foodArry[i].x()*this->UnitSize,this->map->foodArry[i].y()*this->UnitSize);
+        food->show();
+        this->foodList.append(food);
+    }
+    for(int i = 0;i<this->map->blockArry.length();i++){
+        gameProps *block = new gameProps(ui->gameArea);
+        block->setColor(QColor(200,200,200));
+        block->setSize(this->UnitSize);
+        block->setPos(QPoint(this->map->blockArry[i].x(),this->map->blockArry[i].y()));
+        block->move(this->map->blockArry[i].x()*UnitSize,this->map->blockArry[i].y()*UnitSize);
+        block->show();
+        blockList.append(block);
+    }
+    gameProps *sH = new gameProps(ui->gameArea);
+    sH->move(this->map->snackHead.x*UnitSize,this->map->snackHead.y*UnitSize);
+    sH->setPos(QPoint(this->map->snackHead.x,this->map->snackHead.y));
+    sH->setColor(QColor(10,200,100));
+    sH->show();
+    this->snackHead = sH;
+    gameProps *sT = new gameProps(ui->gameArea);
+    sT->move(this->map->snackTail.x*UnitSize,this->map->snackTail.y*UnitSize);
+    sT->setPos(QPoint(this->map->snackTail.x,this->map->snackTail.y));
+    sT->setColor(QColor(10,200,100));
+    sT->show();
+    this->snackTail = sT;
+
+    this->snackHead->setDirection(this->map->snackHead.dir);
+    this->snackTail->setDirection(this->map->snackTail.dir);
+
+    QPoint NextH = this->KeydirToDirection(snackHead);
+    QPoint NextT = this->KeydirToDirection(snackTail);
+    this->headNextX = NextH.x();this->headNextY= NextH.y();
+    this->tailNextX = NextT.x();this->tailNextY= NextT.y();
+    /*
+
     int initLength = 2;// 蛇头和蛇尾就好了.
     for(int i= 0;i<=initLength;i++){
         gameProps *s = new gameProps(ui->gameArea);
@@ -108,6 +180,7 @@ void Game::init()
             snack.enqueue(s);
         }
     }
+    */
 //    snackHead->setColor(QColor(40,0,200));
     // 蛇头蛇尾单独提出来.它是判断游戏动作的重要对象.
 
@@ -118,20 +191,21 @@ void Game::init()
     // 队列也可以当作数组操作.
     // 队头是数组尾.队尾是数组头.
     //setUnitSize((this->height()-120)/this->setting->mapHeight);// 动态根据尺寸设置地图单元大小.
-    this->resize();
+
 //    for(int i = 1;i<=10;i++){
 //        qDebug()<<((1/double(i))*1000)/UnitSize;
 //    }
 
     // 蛇的方向置一个默认值
-    this->NextX = 1;this->NextY= 0;
-    this->NextX_ = 1;this->NextY_= 0;
-    snackHead->setDirection(0);
-    snackTail->setDirection(Qt::Key_D);
-    generalBlockList();
-
+//    this->headNextX = 1;this->headNextY= 0;
+//    this->tailNextX = 1;this->tailNextY= 0;
+//    snackHead->setDirection(0);
+//    snackTail->setDirection(Qt::Key_D);
+    //generalBlockList();
+    this->resize();
     this->hasResized = false;
-
+//    ui->gameArea->setFixedSize(this->UnitSize * setting->mapWidth,this->UnitSize * setting->mapHeight);//尺寸
+//    ui->gameArea->setSize(this->UnitSize);
 }
 void Game::setUnitSize(int size)
 {
@@ -241,8 +315,8 @@ void Game::calculateNextX_Y()
 
         QPoint snackTailDir = KeydirToDirection(snack[0]);// 蛇身最后一个单元的方向作为蛇尾的移动方向.
         if(snackTailDir.x()!=0 || snackTailDir.y() !=0){
-            this->NextX_ = snackTailDir.x();
-            this->NextY_ = snackTailDir.y();
+            this->tailNextX = snackTailDir.x();
+            this->tailNextY = snackTailDir.y();
         }
         snack[0]->hide();
 
@@ -261,8 +335,8 @@ void Game::calculateNextX_Y()
     // 根据读取的键盘方向设置蛇头下一帧的方向
     QPoint dir = KeydirToDirection(this->snackHead);
     if(dir.x()!=0 || dir.y()!=0){
-        this->NextX = dir.x();
-        this->NextY = dir.y();
+        this->headNextX = dir.x();
+        this->headNextY = dir.y();
     }
     if(snack.length()){// 蛇尾移动到前一个蛇身上.这一步非常重要.否则蛇尾不能正确的跟上蛇.因为蛇身长度会变化.
         this->snackTail->move(snack[0]->x(),snack[0]->y());
@@ -316,14 +390,14 @@ QPoint Game::PosToPixel(QPoint Pos)
 
 void Game::updatePosition()
 {
-    this->snackHead->move(this->snackHead->x() +this->NextX,this->snackHead->y()+this->NextY);// 蛇头移动就好
+    this->snackHead->move(this->snackHead->x() +this->headNextX,this->snackHead->y()+this->headNextY);// 蛇头移动就好
 
     if(snack.length()){// 蛇有长度
 
-        this->snackTail->move(this->snackTail->x()+NextX_,this->snackTail->y()+NextY_);
+        this->snackTail->move(this->snackTail->x()+tailNextX,this->snackTail->y()+tailNextY);
     }
     else{// 移到蛇头.蛇头蛇尾同位置.
-        this->snackTail->move(this->snackHead->x() +this->NextX,this->snackHead->y()+this->NextY);
+        this->snackTail->move(this->snackHead->x() +this->headNextX,this->snackHead->y()+this->headNextY);
     }
 
 }

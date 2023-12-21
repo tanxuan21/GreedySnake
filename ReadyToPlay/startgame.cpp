@@ -53,7 +53,7 @@ startGame::startGame(QWidget *parent)
         this->hide();
         this->game->show();
         this->game->setGameOption(-1,this->setting_data,0,0);
-        qDebug()<<this->setting_data;
+        //qDebug()<<this->setting_data;
     });
 
     // 开始游戏界面 -> 设置界面
@@ -102,8 +102,11 @@ startGame::startGame(QWidget *parent)
         if(record != 0){
             delete record;
         }
-        map = user->readMap(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+this->user->getUsername()+".map");
-        record = user->readrecord(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+this->user->getUsername()+".rec");
+
+        map = user->readMap(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+user->getUsername()+".map");
+        record = user->readrecord(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+user->getUsername()+".rec");
+        setting_data = Setting::readSettingDataFromFolder(this->user->getPath()+QString::number(MapId)+"/"+user->getUsername()+".config");
+        this->setting->writeSettingDataToComponent(setting_data);
         this->game->setGameOption(MapId,setting_data,map,record);
         this->game->show();
         this->hide();
@@ -119,8 +122,10 @@ startGame::startGame(QWidget *parent)
         if(record != 0){
             delete record;
         }
-        map = user->readMap(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+this->user->getUsername()+".map");
-        record = user->readrecord(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+this->user->getUsername()+".rec");
+        map = user->readMap(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+user->getUsername()+".map");
+        record = user->readrecord(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+user->getUsername()+".rec");
+        setting_data = Setting::readSettingDataFromFolder(this->user->getPath()+QString::number(MapId)+"/"+user->getUsername()+".config");
+        this->setting->writeSettingDataToComponent(setting_data);
         this->game->setGameOption(MapId,setting_data,map,record);
         this->game->show();
         this->hide();
@@ -141,7 +146,7 @@ startGame::startGame(QWidget *parent)
         this->pickSaveWidget->hide();
         // 设置界面要与文件保持一致
         this->setting_data = setting->readSettingDataFromFolder(QString(projectPath)+"data/game/"+user->getUsername()+"/"+QString::number(CurrentMapID)+"/"+user->getUsername()+".config");
-        Setting::debugSettingData(setting_data);
+        //Setting::debugSettingData(setting_data);
         setting->writeSettingDataToComponent(setting_data);
     });
     // 拿到设置结构体

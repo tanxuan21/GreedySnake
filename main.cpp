@@ -5,6 +5,8 @@
 #include "./config.h"
 #include "setting/setting.h"
 #include "./demo.h"
+#include "dataHandler/map.h"
+#include <QFile>
 #include <QScreen>
 #include <QDateTime>
 int main(int argc, char *argv[])
@@ -28,6 +30,19 @@ int main(int argc, char *argv[])
 //    for(int i = 0;i<6;i++){
 //        qDebug()<<qe[i];
 //    }
+
+
+//    QFile file(QString(projectPath)+"/example.txt");
+//    file.open(QIODevice::ReadOnly);
+//    QTextStream read(&file);
+//    while(!read.atEnd()){
+//        QStringList l = read.readLine().split(' ');
+//        for(const QString&item : l){
+//            qDebug()<<item.toInt();
+//        }
+//    }
+//    Map *m = Map::LoadMap(QString(projectPath)+"/example.txt");// 正常
+//    m->debug();// 正常
 
     QApplication a(argc, argv);
     login w;

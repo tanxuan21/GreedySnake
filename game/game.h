@@ -74,8 +74,8 @@ private:
     // ================API====================
     // 控制蛇移动
     //int direction = Qt::Key_Up;//方向.蛇这一帧怎么走根据这个值来判断
-    int NextX = 1,NextY = 0;
-    int NextX_ = 1,NextY_ = 0;
+    int headNextX = 1,headNextY = 0;
+    int tailNextX = 1,tailNextY = 0;
     void calculateNextX_Y();
     // 生成食物
     QList<gameProps *> foodList;

@@ -50,7 +50,7 @@ userData *userData::findUser(const QString &username)
 
 QString userData::getPath()
 {
-    return QString(projectPath) + "data/game/"+this->username;
+    return QString(projectPath) + "data/game/"+this->username+"/";
 }
 
 QStringList userData::readuserMapFolder()
