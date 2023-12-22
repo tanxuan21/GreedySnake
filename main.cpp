@@ -6,6 +6,7 @@
 #include "setting/setting.h"
 #include "./demo.h"
 #include "dataHandler/map.h"
+#include "./tool/tool.h"
 #include <QFile>
 #include <QScreen>
 #include <QDateTime>
@@ -44,6 +45,7 @@ int main(int argc, char *argv[])
 //    Map *m = Map::LoadMap(QString(projectPath)+"/example.txt");// 正常
 //    m->debug();// 正常
 
+//    qDebug()<<(tool::randomInt(0,0));
     QApplication a(argc, argv);
     login w;
     // Demo w;

@@ -79,7 +79,7 @@ void Game::setGameOption(int MapID, settingData *setting, Map *map, Record *reco
     this->MapID = MapID;
     this->setting = setting;
     this->record = record;
-    this->map  = map;
+    this->map = map;
     //Setting::debugSettingData(this->setting);
     // 初始化全游戏.
 

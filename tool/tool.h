@@ -2,7 +2,7 @@
 #define TOOL_H
 #include <QDir>
 #include <QFile>
-
+#include "../config.h"
 class tool
 {
 public:

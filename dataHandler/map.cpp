@@ -1,5 +1,6 @@
 #include "map.h"
 #include <QFile>
+#include "../tool/tool.h"
 Map::Map()
 {
 
@@ -91,7 +92,69 @@ Map *Map::LoadMap(QString path)
 Map *Map::createMap(settingData *s)
 {
     Map *map = new Map();
-    // 生成障碍物.包括后期面所有直接从setting写入的代码也都要更改为从map里写入.
+    // 蛇的初始化状态
+    for(int i = 0;i<4;i++){
+        map->snack.push_back(snackBody(s->mapWidth/2+i,s->mapHeight/2,Qt::Key_D));
+    }
+    map->snackHead = snackBody(s->mapWidth/2+4,s->mapHeight/2,Qt::Key_D);
+    map->snackTail = snackBody(s->mapWidth/2,s->mapHeight/2,Qt::Key_D);
+
+    // 障碍物
+    qDebug()<<"生成障碍物"<<s->blockCount;
+    for(int i = 0;i<s->blockCount;i++){
+        QPoint blockP = QPoint(0,0);
+        if(map->blockArry.length()==0){// 如果根本就没有任何障碍物,要先生成一个.
+            do{
+                blockP.rx() = tool::randomInt(0,s->mapWidth-1);
+                blockP.ry() = tool::randomInt(0,s->mapHeight-1);
+            }while(map->noAcceptBlockP(blockP,s));
+            // 添加进障碍物数组
+            map->blockArry.push_back(blockP);
+            qDebug()<<"length0";
+        }
+        else if(tool::randomInt(0,10) <= s->blockContinuous){// 生成的随机数在连续性的范围之内
+            int index = tool::randomInt(0,map->blockArry.length()-1);
+            while(1){
+                // 数组里随机挑选一个,再看它四周是否有重叠.
+                // 检查四个方向的点位是否合法.
+                blockP = map->blockArry[index];
+                qDebug()<<"选中的点"<<blockP.x()<<blockP.y();
+
+                int beginIndex = tool::randomInt(0,3);// 开始位置
+                bool isFind = false;
+                for(int i = 0;i<4;i++){
+                    blockP = map->blockArry[index];
+                    blockP = map->randomAround(blockP,beginIndex,i);// 绕四周找一找
+                    if(!map->noAcceptBlockP(blockP,s)){// 可以接受,就放到数组里.
+                        map->blockArry.push_back(blockP);
+                        isFind = true;// 并且设置找到了.
+                        break;
+                    }
+                    qDebug()<<"      周围的点"<<blockP.x()<<blockP.y();
+                }
+                if(!isFind){// 四个方向都不合法,顺着数组找下一个.
+                    index = (index+1)%map->snack.length();// 防止越界
+                }
+                else{
+                    break;
+                }
+            }
+        }
+        else{// 生成的随机数不在连续的范围之内,直接随机生成不重叠的即可.
+            // 判读是否合法.也就是判断重叠
+            do{
+                blockP.rx() = tool::randomInt(0,s->mapWidth-1);
+                blockP.ry() = tool::randomInt(0,s->mapHeight-1);
+            }while(map->noAcceptBlockP(blockP,s));
+            // 添加进障碍物数组
+            map->blockArry.push_back(blockP);
+        }
+    }
+    qDebug()<<"--------";
+    for(int i = 0;i<map->blockArry.length();i++){
+        qDebug()<<map->blockArry[i].x()<<map->blockArry[i].y();
+    }
+    qDebug()<<"--------";
     return map;
 }
 

@@ -52,8 +52,7 @@ startGame::startGame(QWidget *parent)
     connect(beginwidget,&begin::newGame,this,[=](){
         this->hide();
         this->game->show();
-        this->game->setGameOption(-1,this->setting_data,0,0);
-        //qDebug()<<this->setting_data;
+        this->game->setGameOption(-1,this->setting_data,Map::createMap(this->setting_data),nullptr);
     });
 
     // 开始游戏界面 -> 设置界面
