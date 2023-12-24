@@ -25,6 +25,9 @@ private slots:
 
     void on_begin_startFromSave_button_clicked();
 
+    void on_look_record_button_clicked();
+
+
 private:
     userData *user;
     Ui::begin *ui;
@@ -33,6 +36,7 @@ signals:
     void backToLogin();// 返回登录界面
     void newGame();// 新游戏
     void startFromSave();// 存档选择界面
+    void lookGame();
 };
 
 #endif // BEGIN_H

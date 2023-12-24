@@ -9,6 +9,8 @@ class gameMap : public QWidget
 public:
     explicit gameMap(QWidget *parent = nullptr);
     void setSize(int size);
+
+
 signals:
 protected:
     void paintEvent(QPaintEvent*);

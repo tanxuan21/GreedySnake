@@ -45,3 +45,8 @@ void begin::on_begin_startFromSave_button_clicked()
     emit startFromSave();
 }
 
+void begin::on_look_record_button_clicked()
+{
+    emit lookGame();
+}
+

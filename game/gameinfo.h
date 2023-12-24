@@ -2,6 +2,8 @@
 #define GAMEINFO_H
 
 #include <QWidget>
+#include <QLineEdit>
+#include <QPushButton>
 
 namespace Ui {
 class gameInfo;
@@ -27,6 +29,8 @@ private slots:
 
     void on_exit_button_clicked();
 
+    void on_record_button_clicked();
+
 private:
     Ui::gameInfo *ui;
 signals:
@@ -34,6 +38,7 @@ signals:
     void continueGame();
     void reStart();
     void exit();
+    void recordButton();
 };
 
 #endif // GAMEINFO_H

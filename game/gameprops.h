@@ -18,6 +18,9 @@ public:
     gameProps(gameProps *p,QWidget *parent);
     void setImg(QString path);
     void setColor(QColor color);
+    QColor getColor() const {
+        return color;
+    }
     void setSize(const int &s);
     void setPos(const QPoint& pos);
     void setDirection(int keyID);

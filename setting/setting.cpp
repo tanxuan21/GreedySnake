@@ -14,9 +14,19 @@ Setting::Setting(QWidget *parent) :
     ui->food_count->setText("食物量");
     ui->food_count->setMax(5);
     ui->food_count->setMin(1);
-    ui->food_generation_pro->setText("食物生成概率");
-    ui->food_generation_pro->setMax(100);
-    ui->food_generation_pro->setMin(1);
+
+    ui->food_generation_pro_1->setText("1分食物生成概率/%");
+    ui->food_generation_pro_1->setMax(100);
+    ui->food_generation_pro_1->setMin(1);
+
+    ui->food_generation_pro_2->setText("2分食物生成概率/%");
+    ui->food_generation_pro_2->setMax(100);
+    ui->food_generation_pro_2->setMin(1);
+
+    ui->food_generation_pro_3->setText("3分食物生成概率/%");
+    ui->food_generation_pro_3->setMax(100);
+    ui->food_generation_pro_3->setMin(1);
+
 
     ui->randSeed->setText("随机种子");
     ui->randSeed->setMax(1000000);
@@ -56,7 +66,9 @@ void Setting::writeSettingDataToFolder(settingData *setting, QString path)
     tx<<setting->gameDifficult<<Qt::endl
     <<setting->foodCount <<Qt::endl
     <<setting->randSeed
-    <<Qt::endl<<setting->foodGenerationPro
+    <<Qt::endl<<setting->food_1_GenerationPro
+    <<Qt::endl<<setting->food_2_GenerationPro
+    <<Qt::endl<<setting->food_3_GenerationPro
     <<Qt::endl<<setting->mapHeight
     <<Qt::endl<<setting->mapWidth
     <<Qt::endl<<setting->blockContinuous
@@ -79,7 +91,9 @@ settingData *Setting::readSettingDataFromFolder(QString path)
     >>setting->gameDifficult
     >>setting->foodCount
     >>setting->randSeed
-    >>setting->foodGenerationPro
+    >>setting->food_1_GenerationPro
+    >>setting->food_2_GenerationPro
+    >>setting->food_3_GenerationPro
     >>setting->mapHeight
     >>setting->mapWidth
     >>setting->blockContinuous
@@ -98,7 +112,9 @@ void Setting::debugSettingData(settingData *setting)
     <<setting->gameDifficult
     <<setting->foodCount
     <<setting->randSeed
-    <<setting->foodGenerationPro
+    <<setting->food_1_GenerationPro
+    <<setting->food_2_GenerationPro
+    <<setting->food_3_GenerationPro
     <<setting->mapHeight
     <<setting->mapWidth
     <<setting->blockContinuous
@@ -114,6 +130,7 @@ void Setting::on_setting_confirmsetting_button_clicked()
     readSettingDataFromInput(this->setting);// 读进来
     emit emitSettingData(this->setting);// 射出去
     emit toStartGame();// 回到开始
+
 }
 
 
@@ -123,7 +140,9 @@ void Setting::readSettingDataFromInput(settingData *setting)
     setting->gameDifficult =  ui->game_difficult->getValue();
     setting->foodCount = ui->food_count->getValue();
     setting->randSeed = ui->randSeed->getValue();
-    setting->foodGenerationPro = double(ui->food_generation_pro->getValue())/100;
+    setting->food_1_GenerationPro = double(ui->food_generation_pro_1->getValue())/100;
+    setting->food_2_GenerationPro = double(ui->food_generation_pro_2->getValue())/100;
+    setting->food_3_GenerationPro = double(ui->food_generation_pro_3->getValue())/100;
     setting->mapHeight = ui->map_height->getValue();
     setting->mapWidth = ui->map_width->getValue();
     setting->blockContinuous = ui->block_continuous->getValue();
@@ -136,7 +155,9 @@ void Setting::writeSettingDataToComponent(settingData *setting)
     ui->game_difficult->MysetValue(setting->gameDifficult);
     ui->food_count->MysetValue(setting->foodCount);
     ui->randSeed->MysetValue(setting->randSeed);
-    ui->food_generation_pro->MysetValue(setting->foodGenerationPro*100);
+    ui->food_generation_pro_1->MysetValue(setting->food_1_GenerationPro*100);
+    ui->food_generation_pro_2->MysetValue(setting->food_2_GenerationPro*100);
+    ui->food_generation_pro_3->MysetValue(setting->food_3_GenerationPro*100);
     ui->map_height->MysetValue(setting->mapHeight);
     ui->map_width->MysetValue(setting->mapWidth);
     ui->block_continuous->MysetValue(setting->blockContinuous);

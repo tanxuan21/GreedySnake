@@ -55,6 +55,12 @@ startGame::startGame(QWidget *parent)
         this->game->setGameOption(-1,this->setting_data,Map::createMap(this->setting_data),nullptr);
     });
 
+    connect(beginwidget,&begin::lookGame,this,[=](){
+        this->hide();
+        this->game->show();
+        this->game->setGameOption(-1,this->setting_data,Map::createMap(this->setting_data),nullptr);
+    });
+
     // 开始游戏界面 -> 设置界面
     connect(beginwidget,&begin::toSetting,this,[=](){
 

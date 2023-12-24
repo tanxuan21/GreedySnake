@@ -1,16 +1,29 @@
 #include "game.h"
 #include "ui_game.h"
 #include <QTimer>
+#include <Qpainter>
 #include <QKeyEvent>
 #include "./gameinfo.h"
 //#include "./snakeunit.h"
 #include "tool/tool.h"
 #include "gameprops.h"
+#include <QRandomGenerator>
+#include <random>
+#include <iostream>
+
 Game::Game(QWidget *parent) :
     QWidget(parent),
+    score(0),
+    currentDirection(QPoint(1,0)),
+    isFailed(false),
+    spacePaused(false),
+    isAuto(false),
     ui(new Ui::Game)
 {
     ui->setupUi(this);
+    // 初始化 scoreLabel
+    scoreLabel = ui->scoreLabel;
+
     this->infoWidget = new gameInfo(this);
     this->infoWidget->show();
     this->infoWidget->move(300,300);
@@ -24,6 +37,8 @@ Game::Game(QWidget *parent) :
     timer->start(700000);
     timer->stop();
 
+    // 连接 scoreChanged 信号到 updateScoreLabel 槽函数
+    connect(this, &Game::scoreChanged, this, &Game::updateScoreLabel);
 
 
     // 游戏信息界面
@@ -62,6 +77,90 @@ Game::Game(QWidget *parent) :
         release();
         emit backToBegin();
     });
+
+
+    //点击暂停
+    connect(pauseButton, &QPushButton::clicked, this, [this](){
+        switchPause();
+    });
+    //获取相对时间
+    startRelativeTime = getCurrentTime(); // 初始化相对时间
+    loadRecord();
+
+
+}
+void Game::saveRecord()
+{
+    QDir().mkpath("record"); // 创建目录
+
+    // 获取当前世界时间
+    QString currentTime = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
+
+    // 构建文件名
+    QString fileName = "record/default_" + currentTime + ".rec";
+
+    // 创建 QFile 对象
+    QFile file(fileName);
+
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QTextStream out(&file);
+
+        // 写入相对时间和键值到文件
+        for (const auto &action : userActions)
+        {
+            out << action.first << " " << action.second << '\n';
+
+        }
+        qDebug() << "On writing";
+
+        file.close();
+    }
+    else
+    {
+        qDebug() << "Failed to open record file for writing!";
+    }
+}
+
+void Game::loadRecord()
+{
+    QFile file("record/default.rec");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream in(&file);
+
+        // 读取相对时间和键值
+        while (!in.atEnd())
+        {
+            QString line = in.readLine();
+            QStringList parts = line.split(" ");
+            if (parts.size() == 2)
+            {
+                int relativeTime = parts[0].toInt();
+                int key = parts[1].toInt();
+                userActions.append(QPair<int, int>(relativeTime, key));
+            }
+        }
+
+        file.close();
+    }
+    else
+    {
+        qDebug() << "No existing record file found.";
+    }
+}
+
+
+// 槽函数，用于记录用户操作和时间戳
+void Game::recordUserAction(int key)
+{
+    int relativeTime = getCurrentTime() - startRelativeTime;
+    userActions.append(QPair<int, int>(relativeTime, key));
+
+    // 写入记录到文件
+    saveRecord();
+
+    qDebug() << "Recorded user action:" << key << "at relative time:" << relativeTime;
 }
 
 Game::~Game()
@@ -115,7 +214,7 @@ void Game::init()
         s->move(this->map->snack[i].x*UnitSize,this->map->snack[i].y*UnitSize);
         s->setDirection(this->map->snack[i].dir);
         s->setPos(QPoint(this->map->snack[i].x,this->map->snack[i].y));
-        s->setColor(QColor(10,200,100));
+        s->setColor(QColor(10,200,100)); //snakecolor!在刚进入游戏的的时候
         s->show();
         this->snack.enqueue(s);
     }
@@ -140,13 +239,13 @@ void Game::init()
     gameProps *sH = new gameProps(ui->gameArea);
     sH->move(this->map->snackHead.x*UnitSize,this->map->snackHead.y*UnitSize);
     sH->setPos(QPoint(this->map->snackHead.x,this->map->snackHead.y));
-    sH->setColor(QColor(10,200,100));
+    sH->setColor(QColor(10,200,100));//snakecolor!蛇头的颜色
     sH->show();
     this->snackHead = sH;
     gameProps *sT = new gameProps(ui->gameArea);
     sT->move(this->map->snackTail.x*UnitSize,this->map->snackTail.y*UnitSize);
     sT->setPos(QPoint(this->map->snackTail.x,this->map->snackTail.y));
-    sT->setColor(QColor(10,200,100));
+    sT->setColor(QColor(10,200,100));//snakecolor!蛇尾巴的颜色
     sT->show();
     this->snackTail = sT;
 
@@ -157,55 +256,9 @@ void Game::init()
     QPoint NextT = this->KeydirToDirection(snackTail);
     this->headNextX = NextH.x();this->headNextY= NextH.y();
     this->tailNextX = NextT.x();this->tailNextY= NextT.y();
-    /*
 
-    int initLength = 2;// 蛇头和蛇尾就好了.
-    for(int i= 0;i<=initLength;i++){
-        gameProps *s = new gameProps(ui->gameArea);
-        s->move(2*UnitSize,2*UnitSize);
-        s->setPos(QPoint(2,2));
-        s->setColor(QColor(10,200,100));
-        s->show();
-        if(i==initLength){
-            this->snackHead = s;
-//            this->snackHead->setColor(QColor(100,255,100));
-            this->snackHead->setColor(QColor(10,200,100));
-        }
-        else if(i==0){
-            this->snackTail = s;
-//            this->snackTail->setColor(QColor(255,0,100));
-            this->snackTail->setColor(QColor(10,200,100));
-        }
-        else{
-            snack.enqueue(s);
-        }
-    }
-    */
-//    snackHead->setColor(QColor(40,0,200));
-    // 蛇头蛇尾单独提出来.它是判断游戏动作的重要对象.
-
-    // 蛇身的每一个单元都有一个Qt键盘ID值作为方向.
-    // 游戏每一帧按照这个方向更新他们的位置.
-    // 蛇头碰到边线,整条蛇的方向更新为它前一个单元的方向.蛇头的方向就是键盘事件获取的方向.
-
-    // 队列也可以当作数组操作.
-    // 队头是数组尾.队尾是数组头.
-    //setUnitSize((this->height()-120)/this->setting->mapHeight);// 动态根据尺寸设置地图单元大小.
-
-//    for(int i = 1;i<=10;i++){
-//        qDebug()<<((1/double(i))*1000)/UnitSize;
-//    }
-
-    // 蛇的方向置一个默认值
-//    this->headNextX = 1;this->headNextY= 0;
-//    this->tailNextX = 1;this->tailNextY= 0;
-//    snackHead->setDirection(0);
-//    snackTail->setDirection(Qt::Key_D);
-    //generalBlockList();
     this->resize();
     this->hasResized = false;
-//    ui->gameArea->setFixedSize(this->UnitSize * setting->mapWidth,this->UnitSize * setting->mapHeight);//尺寸
-//    ui->gameArea->setSize(this->UnitSize);
 }
 void Game::setUnitSize(int size)
 {
@@ -247,14 +300,14 @@ void Game::generalFood()
 //            qDebug()<<gamePos.x()<<gamePos.y();
             for(;i < snack.length();i++){
                 if(snack[i] -> getPoint().x() == gamePos.x() && snack[i]->getPoint().y() == gamePos.y()){
-                    qDebug()<<"on";
+                    //qDebug()<<"on";
                     break;
                 }
             }
 
             for(;j < blockList.length();j++){
                 if(blockList[j] -> getPoint().x() == gamePos.x() && blockList[j]->getPoint().y() == gamePos.y()){
-                    qDebug()<<"on";
+                    //qDebug()<<"on";
                     break;
                 }
             }
@@ -263,10 +316,33 @@ void Game::generalFood()
             }
         }while(isOnSnack);
         gameProps *food = new gameProps(ui->gameArea);
-        food->setColor(QColor(200,100,100));
         food->setSize(this->UnitSize);
         food->setPos(gamePos);
         food->move(gamePos.x()*this->UnitSize,gamePos.y()*this->UnitSize);
+
+        qDebug()<<"setting->randSeed-="<<setting->randSeed;
+
+        // 使用随机设备作为种子
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        // 设置分布范围
+        std::uniform_int_distribution<> dis(1, 100);
+
+        // 生成随机数
+        int probability = dis(gen);
+        qDebug()<<"rd="<<rd();
+
+        qDebug()<<"(setting->food_1_GenerationPro)="<<(setting->food_1_GenerationPro)*100;
+        if (probability < (setting->food_1_GenerationPro*100)) {
+            food->setColor(QColor(80, 190, 230)); // 蓝色，60%概率
+            qDebug()<<"generate food 1,probability="<<setting->food_1_GenerationPro;
+        } else if (probability < (setting->food_1_GenerationPro)*100+(setting->food_2_GenerationPro)*100) {
+            food->setColor(QColor(180, 80, 230)); // 紫色，30%概率
+        } else {
+            food->setColor(QColor(220, 255, 0)); // 黄色，10%概率
+        }
+
         food->show();
         foodList.append(food);
 //        qDebug()<<gamePos.x()<<gamePos.y();
@@ -292,14 +368,32 @@ void Game::generalBlockList()
     }
 }
 
+void Game::updateScoreLabel(int score) {
+    qDebug()<<"score in updatescorelabel="<<score;
+    if (scoreLabel) {
+        qDebug()<<"scoreLabel is listening";
+        scoreLabel->setText("分数：" + QString::number(score));  // 更新得分显示
+    }
+}
+
 void Game::calculateNextX_Y()
 {
     // 蛇头在自己的位置创建一个单元.
     QPoint p = QPoint(snackHead->pos().x()/this->UnitSize,snackHead->pos().y()/this->UnitSize);
     snackHead->setPos(p);// 设置蛇头的数据位置
 
+    QColor snakeColor;
+
+
+ snakeColor = QColor(10, 200, 100);
+    for (gameProps* snakePart : this->snack) {
+        snakePart->setColor(snakeColor);
+    }
+
+
     gameProps *NewSnack = new gameProps(ui->gameArea);
-    NewSnack->setColor(QColor(10,200,100));
+
+    NewSnack->setColor(snakeColor);
     NewSnack->setDirection(this->snackHead->getDirection());// 这个信息很重要.它最终给到蛇尾,确定蛇尾的走向.
     NewSnack->setPos(snackHead->getPoint());
     NewSnack->setSize(this->UnitSize);
@@ -325,10 +419,33 @@ void Game::calculateNextX_Y()
 
     }
     else if(CollisionID == 1){// 吃到食物.加分.
+       // qDebug() << "eat food in calculate";
+
 
     }
     else if(CollisionID == 0){// 失败.退出.
+
+        isFailed = true;
+        score=0;
+        emit scoreChanged(score);
+
+        QColor snakeColor;
+        // 设置整个蛇身颜色
+        if (isFailed) {
+            qDebug()<<"fail了，现在要换颜色";
+            snakeColor = QColor(255, 0, 0);  // 失败时的颜色
+        } else {
+            qDebug()<<"没fail，不换颜色";
+            snakeColor = QColor(10, 200, 200); // snakecolor! 蛇的身子的颜色
+        }
+        for (gameProps* snakePart : this->snack) {
+            snakePart->setColor(snakeColor);
+        }
+        snackHead->setColor(snakeColor);
+        snackTail->setColor(snakeColor);
+
         this->switchPause();
+        ui->gameArea->update();
         failed();
     }
 
@@ -343,20 +460,12 @@ void Game::calculateNextX_Y()
         this->snackTail->setPos(snack[0]->getPoint());
     }
     this->hasResized = false;
-//        //qDebug()<<p.x()<<p.y()<<"|"<<snackTail->getPoint().x()<<snackTail->getPoint().y();
-//        qDebug()<<snackTail->getDirection()<<"-"<<snackTail->getPoint().x()<<snackTail->getPoint().y();
-
-//        for(int i = 0;i<snack.length();i++){
-//           qDebug()<<snack[i]->getDirection()<<"-"<<snack[i]->getPoint().x()<<snack[i]->getPoint().y();
-
-//        }
-//        qDebug()<<snackHead->getDirection()<<"-"<<snackHead->getPoint().x()<<snackHead->getPoint().y();
-//        qDebug()<<"============";
-
 }
 // =======================工具函数=========================
 QPoint Game::KeydirToDirection(gameProps *p)
 {
+
+
 
     if(p->getDirection()==Qt::Key_Up || p->getDirection() == Qt::Key_W){
         return QPoint(0,-1);
@@ -372,6 +481,7 @@ QPoint Game::KeydirToDirection(gameProps *p)
     }
     return QPoint(0,0);
 }
+//获取时间用于录制
 
 
 
@@ -401,22 +511,38 @@ void Game::updatePosition()
     }
 
 }
+
+
 void Game::failed()
 {
-    /*
-    if(snackHead->pos().x()+this->UnitSize > ui->gameArea->width() ||
-       snackHead->pos().x() < 0 ||
-       snackHead->pos().y() + this->UnitSize > ui->gameArea->height() ||
-       snackHead->pos().y() < 0){
-
-    }
-    */
-
-
+    //碰到墙面
     if(snackHead->pos().y()<0){
+
         if(setting->upwall){
+
+            isFailed = true;
+            score=0;
+            emit scoreChanged(score);
+
+            QColor snakeColor;
+            // 设置整个蛇身颜色
+            if (isFailed) {
+                qDebug()<<"fail了，现在要换颜色";
+                snakeColor = QColor(255, 0, 0);  // 失败时的颜色
+            } else {
+                qDebug()<<"没fail，不换颜色";
+                snakeColor = QColor(10, 200, 200); // snakecolor! 蛇的身子的颜色
+            }
+            for (gameProps* snakePart : this->snack) {
+                snakePart->setColor(snakeColor);
+            }
+            snackHead->setColor(snakeColor);
+            snackTail->setColor(snakeColor);
+
             switchPause();
+            ui->gameArea->update();
             this->infoWidget->setText("失败");
+
         }
         else{
             this->snackHead->move(this->snackHead->x(),ui->gameArea->height());
@@ -424,7 +550,28 @@ void Game::failed()
     }
     else if(snackHead->pos().y()+this->UnitSize > ui->gameArea->height()){
         if(setting->downwall){
+
+            isFailed = true;
+            score=0;
+            emit scoreChanged(score);
+
+            QColor snakeColor;
+            // 设置整个蛇身颜色
+            if (isFailed) {
+                qDebug()<<"fail了，现在要换颜色";
+                snakeColor = QColor(255, 0, 0);  // 失败时的颜色
+            } else {
+                qDebug()<<"没fail，不换颜色";
+                snakeColor = QColor(10, 200, 200); // snakecolor! 蛇的身子的颜色
+            }
+            for (gameProps* snakePart : this->snack) {
+                snakePart->setColor(snakeColor);
+            }
+            snackHead->setColor(snakeColor);
+            snackTail->setColor(snakeColor);
+
             switchPause();
+            ui->gameArea->update();
             this->infoWidget->setText("失败");
         }
         else{
@@ -433,7 +580,28 @@ void Game::failed()
     }
     else if(snackHead->pos().x()<0){
         if(setting->leftwall){
+
+            isFailed = true;
+            score=0;
+            emit scoreChanged(score);
+
+            QColor snakeColor;
+            // 设置整个蛇身颜色
+            if (isFailed) {
+                qDebug()<<"fail了，现在要换颜色";
+                snakeColor = QColor(255, 0, 0);  // 失败时的颜色
+            } else {
+                qDebug()<<"没fail，不换颜色";
+                snakeColor = QColor(10, 200, 200); // snakecolor! 蛇的身子的颜色
+            }
+            for (gameProps* snakePart : this->snack) {
+                snakePart->setColor(snakeColor);
+            }
+            snackHead->setColor(snakeColor);
+            snackTail->setColor(snakeColor);
+
             switchPause();
+            ui->gameArea->update();
             this->infoWidget->setText("失败");
         }
         else{
@@ -442,7 +610,28 @@ void Game::failed()
     }
     else if(snackHead->pos().x()+this->UnitSize > ui->gameArea->width()){
         if(setting->rightwall){
+
+            isFailed = true;
+            score=0;
+            emit scoreChanged(score);
+
+            QColor snakeColor;
+            // 设置整个蛇身颜色
+            if (isFailed) {
+                qDebug()<<"fail了，现在要换颜色";
+                snakeColor = QColor(255, 0, 0);  // 失败时的颜色
+            } else {
+                qDebug()<<"没fail，不换颜色";
+                snakeColor = QColor(10, 200, 200); // snakecolor! 蛇的身子的颜色
+            }
+            for (gameProps* snakePart : this->snack) {
+                snakePart->setColor(snakeColor);
+            }
+            snackHead->setColor(snakeColor);
+            snackTail->setColor(snakeColor);
+
             switchPause();
+            ui->gameArea->update();
             this->infoWidget->setText("失败");
         }
         else{
@@ -452,12 +641,12 @@ void Game::failed()
 
 }
 
-
 // ===============================================================================================
 // ===============================================================================================
 // 游戏每帧调用一次
 void Game::update()
 {
+
 
     // 如果碰到边缘.
     if(snackHead->pos().y()%this->UnitSize==0 && snackHead->pos().x()%this->UnitSize==0){
@@ -475,6 +664,8 @@ void Game::update()
         failed();
     }
     this->lasttouchingEdg = this->touchingEdg;
+
+
     updatePosition(); //我在结束才调用更新位置函数.这里看看未来会不会出现bug.
     // 这里是为了resize时重置一切信息时使用.
 }
@@ -506,8 +697,24 @@ int Game::collision()
         // 检测foodlist的碰撞
         for(int i = 0;i<foodList.length();i++){
             if(y == (foodList[i]->getPoint().y()+1) && (this->snackHead->pos().x()/this->UnitSize == foodList[i]->getPoint().x())){
+
+                QColor foodColor = foodList[i]->getColor();
+
+                if (foodColor == QColor(80, 190, 230)) { // 蓝色
+                    // 给予1分
+                    score += 1;
+                } else if (foodColor == QColor(180, 80, 230)) { // 紫色
+                    // 给予2分
+                    score += 2;
+                } else if (foodColor == QColor(220, 255, 0)) { // 黄色
+                    // 给予3分
+                    score += 3;
+                }
+                //qDebug()<<score;
+
                 foodList[i]->close();
                 foodList.removeAt(i);
+                emit scoreChanged(score);
                 return 1;
             }
         }
@@ -525,8 +732,23 @@ int Game::collision()
         }
         for(int i = 0;i<foodList.length();i++){
             if(y == foodList[i]->getPoint().y()-1 && (this->snackHead->pos().x()/this->UnitSize == foodList[i]->getPoint().x())){
+                QColor foodColor = foodList[i]->getColor();
+
+                if (foodColor == QColor(80, 190, 230)) { // 蓝色
+                    // 给予1分
+                    score += 1;
+                } else if (foodColor == QColor(180, 80, 230)) { // 紫色
+                    // 给予2分
+                    score += 2;
+                } else if (foodColor == QColor(220, 255, 0)) { // 黄色
+                    // 给予3分
+                    score += 3;
+                }
+                //qDebug()<<score;
+
                 foodList[i]->close();
                 foodList.removeAt(i);
+                emit scoreChanged(score);
                 return 1;
             }
         }
@@ -545,8 +767,23 @@ int Game::collision()
         }
         for(int i = 0;i<foodList.length();i++){
             if(x == this->foodList[i]->getPoint().x()+1 && (this->snackHead->pos().y()/this->UnitSize == foodList[i]->getPoint().y())){
+                QColor foodColor = foodList[i]->getColor();
+
+                if (foodColor == QColor(80, 190, 230)) { // 蓝色
+                    // 给予1分
+                    score += 1;
+                } else if (foodColor == QColor(180, 80, 230)) { // 紫色
+                    // 给予2分
+                    score += 2;
+                } else if (foodColor == QColor(220, 255, 0)) { // 黄色
+                    // 给予3分
+                    score += 3;
+                }
+                //qDebug()<<score;
+
                 foodList[i]->close();
                 foodList.removeAt(i);
+                emit scoreChanged(score);
                 return 1;
             }
         }
@@ -565,12 +802,29 @@ int Game::collision()
         }
         for(int i = 0;i<foodList.length();i++){
             if(x == this->foodList[i]->getPoint().x()-1 && (this->snackHead->pos().y()/this->UnitSize == foodList[i]->getPoint().y())){
+                QColor foodColor = foodList[i]->getColor();
+
+                if (foodColor == QColor(80, 190, 230)) { // 蓝色
+                    // 给予1分
+                    score += 1;
+                } else if (foodColor == QColor(180, 80, 230)) { // 紫色
+                    // 给予2分
+                    score += 2;
+                } else if (foodColor == QColor(220, 255, 0)) { // 黄色
+                    // 给予3分
+                    score += 3;
+                }
+                //qDebug()<<score;
+
                 foodList[i]->close();
                 foodList.removeAt(i);
+                emit scoreChanged(score);
                 return 1;
             }
         }
     }
+
+
     return -1;
 }
 
@@ -603,31 +857,145 @@ void Game::release()
 // Qt事件
 void Game::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key()==32)
+    if (event->key() == 32)
     {
-        switchPause();
+        if (!spacePaused)
+        {
+            qDebug() << "Space pressed!";
+            switchPause();
+            spacePaused = true;
+
+            // 启动一个定时器，在短时间内禁止再次切换
+            QTimer::singleShot(1000, this, [this]() {
+                qDebug()<<"space time up!";
+                spacePaused = false;
+            });
+        }
     }
-    else if(event->key()==Qt::Key_A ||
-            event->key()==Qt::Key_S ||
-            event->key()==Qt::Key_D ||
-            event->key()==Qt::Key_W||
-            event->key()==Qt::Key_Up ||
-            event->key()==Qt::Key_Down ||
-            event->key()==Qt::Key_Left ||
-            event->key()==Qt::Key_Right  ){
-        this->snackHead->setDirection(event->key());
+    else if (event->key() == Qt::Key_A ||
+             event->key() == Qt::Key_S ||
+             event->key() == Qt::Key_D ||
+             event->key() == Qt::Key_W ||
+             event->key() == Qt::Key_Up ||
+             event->key() == Qt::Key_Down ||
+             event->key() == Qt::Key_Left ||
+             event->key() == Qt::Key_Right)
+    {
+        // 获取当前蛇头的方向
+        int currentDirection = this->snackHead->getDirection();
+        // 获取按下键对应的方向
+        int newDirection = event->key();
+
+        // 检查按下的方向与当前方向是否相反，不相反则允许改变方向.
+        if (!isOppositeDirection(currentDirection, newDirection))
+        {
+            this->snackHead->setDirection(newDirection);
+        }
+
+        // 调用记录用户操作的槽函数
+        recordUserAction(event->key());
     }
+
 }
+void Game::simulateKeyPress(int asciiCode)
+{
+    QKeyEvent keyPress(QEvent::KeyPress, asciiCode, Qt::NoModifier);
+    QCoreApplication::sendEvent(this, &keyPress);
+
+}
+
+
+
+
+bool Game::isOppositeDirection(int dir1, int dir2)
+{
+    // 定义方向相反的关系
+    QMap<int, int> oppositeDirections;
+    oppositeDirections[Qt::Key_A] = Qt::Key_D;
+    oppositeDirections[Qt::Key_D] = Qt::Key_A;
+    oppositeDirections[Qt::Key_W] = Qt::Key_S;
+    oppositeDirections[Qt::Key_S] = Qt::Key_W;
+    oppositeDirections[Qt::Key_Left] = Qt::Key_Right;
+    oppositeDirections[Qt::Key_Right] = Qt::Key_Left;
+    oppositeDirections[Qt::Key_Up] = Qt::Key_Down;
+    oppositeDirections[Qt::Key_Down] = Qt::Key_Up;
+
+    // 检查方向是否相反
+    return oppositeDirections.value(dir1, -1) == dir2;
+}
+
+
 
 void Game::paintEvent(QPaintEvent *)
 {
-//    QPainter painter = QPainter(ui->gameArea);
-//    painter.setBrush(Qt::white);
-//    painter.drawRect(0,0,100,100);
-//    QPainter painter1 = QPainter(this);
-//    painter1.setBrush(Qt::white);
-//    painter1.drawRect(400,400,100,100);
+    QPainter painter = QPainter(this);
+
+    // 绘制边框
+    // if (setting) {
+    //     QPen borderPen;
+    //     if (setting->upwall) {
+    //         borderPen.setColor(QColor(230, 6, 45)); // 红色
+    //         qDebug() << "Red Border Received!";
+    //     } else {
+    //         borderPen.setColor(QColor(184, 192, 104)); // 绿色
+    //         qDebug() << "Green Border Received!";
+    //     }
+    //     borderPen.setWidth(2); // 边框宽度
+    //     painter.setPen(borderPen);
+    //     painter.drawRect(0, 0, this->width(), this->height());
+    // }
+
+    // 获取 ui->gameArea 的宽度和高度
+    int gameAreaWidth = ui->gameArea->width();
+    int gameAreaHeight = ui->gameArea->height();
+
+    // 计算在 this 中居中显示的块的左上角坐标
+    int x = (width() - gameAreaWidth) / 2 ;
+    int y = (height() - gameAreaHeight) / 2 - 18;
+
+    // 绘制居中的框
+    if (setting->upwall) {
+        painter.setPen(QPen(QColor(Qt::red), 10));
+        painter.drawLine(QPoint(x, y), QPoint(x + gameAreaWidth, y));
+    }else{
+        painter.setPen(QPen(QColor(Qt::green), 10));
+        painter.drawLine(QPoint(x, y), QPoint(x + gameAreaWidth, y));
+    }
+    if(setting->downwall){
+        painter.setPen(QPen(QColor(Qt::red), 10));
+        painter.drawLine(QPoint(x, y + gameAreaHeight), QPoint(x + gameAreaWidth, y + gameAreaHeight));
+    }else{
+        painter.setPen(QPen(QColor(Qt::green), 10));
+        painter.drawLine(QPoint(x, y + gameAreaHeight), QPoint(x + gameAreaWidth, y + gameAreaHeight));
+    }
+    if(setting->leftwall)
+    {
+        painter.setPen(QPen(QColor(Qt::red), 10));
+        painter.drawLine(QPoint(x, y), QPoint(x, y + gameAreaHeight));
+    }else{
+        painter.setPen(QPen(QColor(Qt::green), 10));
+        painter.drawLine(QPoint(x, y), QPoint(x, y + gameAreaHeight));
+    }
+    if(setting->rightwall)
+    {
+        painter.setPen(QPen(QColor(Qt::red), 10));
+        painter.drawLine(QPoint(x + gameAreaWidth, y), QPoint(x + gameAreaWidth, y + gameAreaHeight));
+    }else{
+        painter.setPen(QPen(QColor(Qt::green), 10));
+        painter.drawLine(QPoint(x + gameAreaWidth, y), QPoint(x + gameAreaWidth, y + gameAreaHeight));
+    }
+
+
+    // painter.setPen(QPen(QColor(Qt::black), 0));
+    // for(int i = 1;i<this->height()-1;i+=this->unitSize){
+    //     painter.drawLine(QPoint(0,i),QPoint(this->width(),i));
+    // }
+    // for(int i = 1;i<this->width()-1;i+=this->unitSize){
+    //     painter.drawLine(QPoint(i,0),QPoint(i,this->height()));
+    // }
+
 }
+
 
 void Game::resizeEvent(QResizeEvent *event)
 {
