@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>636</width>
-    <height>680</height>
+    <width>643</width>
+    <height>1087</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>0</width>
-    <height>680</height>
+    <height>900</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -41,13 +41,13 @@
         <property name="minimumSize">
          <size>
           <width>320</width>
-          <height>200</height>
+          <height>280</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>200</height>
+          <height>280</height>
          </size>
         </property>
         <property name="font">
@@ -88,30 +88,81 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="saveSetButton">
-        <property name="minimumSize">
+       <widget class="QWidget" name="button_group_3" native="true">
+        <property name="maximumSize">
          <size>
-          <width>0</width>
-          <height>30</height>
+          <width>16777215</width>
+          <height>50</height>
          </size>
         </property>
-        <property name="text">
-         <string>保存自定义配置</string>
-        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_12">
+         <item>
+          <widget class="QLineEdit" name="saveGameText"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="saveGameButton">
+           <property name="text">
+            <string>存储游戏配置</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="readGameText"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="readGameButton">
+           <property name="text">
+            <string>读取游戏配置</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
        <widget class="QGroupBox" name="groupBox_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
-          <height>300</height>
+          <height>400</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>400</height>
+          <height>380</height>
          </size>
         </property>
         <property name="font">
@@ -338,37 +389,61 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="saveMapButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
+       <widget class="QWidget" name="button_group_2" native="true">
+        <property name="maximumSize">
          <size>
-          <width>0</width>
-          <height>30</height>
+          <width>16777215</width>
+          <height>50</height>
          </size>
         </property>
-        <property name="sizeIncrement">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="text">
-         <string>保存地图配置</string>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>10</width>
-          <height>10</height>
-         </size>
-        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_11">
+         <item>
+          <widget class="QLineEdit" name="saveMapText"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="saveMapButton">
+           <property name="text">
+            <string>存储地图配置</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_7">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="readMapText"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="readMapButton">
+           <property name="text">
+            <string>浏览地图配置</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
@@ -385,7 +460,7 @@
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>40</height>
+             <height>30</height>
             </size>
            </property>
            <property name="text">
@@ -411,7 +486,7 @@
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>40</height>
+             <height>30</height>
             </size>
            </property>
            <property name="text">
@@ -437,7 +512,7 @@
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>40</height>
+             <height>30</height>
             </size>
            </property>
            <property name="text">

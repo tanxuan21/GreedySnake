@@ -2,6 +2,8 @@
 #define SETTING_H
 
 #include <QWidget>
+#include <QString>
+
 #include "config.h"
 namespace Ui {
 class Setting;
@@ -20,9 +22,15 @@ public:
     // 文件读入
     static settingData *readSettingDataFromFolder(QString path);
     static void debugSettingData(settingData*);
+    QString getSaveGameName() const;
 private slots:
     // 确认修改
     void on_setting_confirmsetting_button_clicked();
+    void on_saveMapButton_clicked();
+    void on_saveGameButton_clicked();
+
+    void on_readMapButton_clicked();
+    void on_readGameButton_clicked();
 
     // 恢复修改前
     void on_setting_restoreModify_button_clicked();
@@ -36,6 +44,10 @@ private slots:
     void on_left_wall_clicked();
 
     void on_down_wall_clicked();
+
+
+    //QString getSaveGameName;
+
 
 private:
     Ui::Setting *ui;
@@ -58,6 +70,10 @@ private:
     settingData *setting = new settingData();
     //  从ui组件读取值
     void readSettingDataFromInput(settingData*);
+    void readMapDataFromInput(settingData*);
+     QString saveGameName;
+
+
 public:
     // 将值写入组件
     void writeSettingDataToComponent(settingData*);
@@ -65,6 +81,9 @@ public:
 signals:
     void toStartGame();
     void emitSettingData(settingData *);
+
+    void saveGameNameChanged(const QString &newSaveGameName);
+
 };
 
 #endif // SETTING_H

@@ -10,6 +10,7 @@
 #include <QRandomGenerator>
 #include <random>
 #include <iostream>
+#include <setting/setting.h>
 
 Game::Game(QWidget *parent) :
     QWidget(parent),
@@ -23,6 +24,8 @@ Game::Game(QWidget *parent) :
     ui->setupUi(this);
     // 初始化 scoreLabel
     scoreLabel = ui->scoreLabel;
+    configLabel = ui->configLabel;
+    mapLabel = ui -> mapLabel;
 
     this->infoWidget = new gameInfo(this);
     this->infoWidget->show();
@@ -39,6 +42,23 @@ Game::Game(QWidget *parent) :
 
     // 连接 scoreChanged 信号到 updateScoreLabel 槽函数
     connect(this, &Game::scoreChanged, this, &Game::updateScoreLabel);
+
+    settingname = new Setting();
+
+    // 连接 Setting 类的信号和槽
+    connect(settingname, &Setting::saveGameNameChanged, this, [=](QString filename){
+        qDebug()<<"config in updatescorelabel="<<filename;
+
+        ui->configLabel->setText("config="+filename);
+    });
+
+    // void Game::updateScoreLabel(int score) {
+    //     qDebug()<<"score in updatescorelabel="<<score;
+    //     if (scoreLabel) {
+    //         qDebug()<<"scoreLabel is listening";
+    //         scoreLabel->setText("分数：" + QString::number(score));  // 更新得分显示
+    //     }
+    // }
 
 
     // 游戏信息界面
@@ -951,7 +971,7 @@ void Game::paintEvent(QPaintEvent *)
 
     // 计算在 this 中居中显示的块的左上角坐标
     int x = (width() - gameAreaWidth) / 2 ;
-    int y = (height() - gameAreaHeight) / 2 - 18;
+    int y = (height() - gameAreaHeight) / 2 - 10;
 
     // 绘制居中的框
     if (setting->upwall) {

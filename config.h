@@ -13,12 +13,13 @@ struct settingData{
     int mapWidth = 10;
     int mapHeight = 10;
 
-    int upwall = false;
-    int downwall = false;
-    int leftwall = false;
-    int rightwall = false;
+    int upwall = true;
+    int downwall = true;
+    int leftwall = true;
+    int rightwall = true;
 
     int blockContinuous = 1;
     int blockCount = 0;
+
 };
 #endif // CONFIG_H

@@ -63,6 +63,7 @@ private:
     gameProps *snackTail;
 
     settingData *setting;
+    Setting* settingname;
     int MapID  = -1;
 
     Map *map;
@@ -120,6 +121,10 @@ private:
     //生成得分
     int score;
     QLabel *scoreLabel;  //得分显示
+
+    QLabel *configLabel;  //得分显示
+    QLabel *mapLabel;  //得分显示
+
 
     // 生成障碍物
     QList<gameProps *> blockList;
