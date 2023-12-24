@@ -52,9 +52,9 @@ int main(int argc, char *argv[])
 
 //    qDebug()<<(tool::randomInt(0,0));
     //
-    Record *rec = Record::readrecord(debugPath);
-    Record::debug(rec);
-    Record::writeRecord(debugPath1,rec);
+//    Record *rec = Record::readrecord(debugPath);
+//    Record::debug(rec);
+//    Record::writeRecord(debugPath1,rec);
     QApplication a(argc, argv);
     login w;
     // Demo w;

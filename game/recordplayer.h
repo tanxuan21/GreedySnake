@@ -1,8 +1,7 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef RECORDPLAYER_H
+#define RECORDPLAYER_H
 
 #include <QWidget>
-#include "./snakeunit.h"
 #include <QQueue>
 #include <QTimer>
 #include "config.h"
@@ -10,23 +9,24 @@
 #include "dataHandler/userdata.h"
 #include "./gameprops.h"
 namespace Ui {
-class Game;
+class recordPlayer;
 }
 
-class Game : public QWidget
+class recordPlayer : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit Game(QWidget *parent = nullptr);
-    ~Game();
+    explicit recordPlayer(QWidget *parent = nullptr);
+    ~recordPlayer();
     void setSettingData(settingData* s){this->setting = s;}
     void setMapID(int i){this->MapID = i;}
     void setUser(userData *user);
     void setGameOption(int MapID,settingData *setting,Map *map,Record *record);
 
+
 private:
-    Ui::Game *ui;
+    Ui::recordPlayer *ui;
     // 测试
     gameProps *pros;
 
@@ -41,6 +41,7 @@ private:
     int MapID  = -1;
     Map *map;
     Record *record = new Record();
+    long long frameNumber = 0;
     bool lasttouchingEdg = false;
     bool touchingEdg  =false;// 是否碰到每个格子边.因为游戏帧过于密集,可能在边界重复调用update里面的函数.需要做防抖.
     bool hasResized = false;// 继续(开始)是否resize过.
@@ -78,18 +79,18 @@ private:
     void calculateNextX_Y();
     // 生成食物
     QList<gameProps *> foodList;
-    void generalFood();
+//    void generalFood();
     QPoint KeydirToDirection(gameProps *p);
     // 生成障碍物
     QList<gameProps *> blockList;
-    void generalBlockList();
+//    void generalBlockList();
     // ====================工具函数=======================
     // 屏幕中的像素点 -> 位置信息
     QPoint pixelToPos(QPoint pixel);
     // 位置信息 -> 屏幕中的像素点
     QPoint PosToPixel(QPoint Pos);
 signals:
-    void backToBegin();
+    void rec_backToBegin();
 protected:
     void keyPressEvent(QKeyEvent *);
     void paintEvent(QPaintEvent*);
@@ -98,4 +99,4 @@ private:
     void resize();
 };
 
-#endif // GAME_H
+#endif // RECORDPLAYER_H

@@ -8,6 +8,7 @@
 #include "./begin.h"
 #include "./picksave.h"
 #include "dataHandler/userdata.h"
+#include "../game/recordplayer.h"
 #include <QScrollArea>
 class startGame : public QWidget
 {
@@ -22,7 +23,7 @@ private:
     begin *beginwidget;
     QScrollArea *scrollWidget;
     pickSave *pickSaveWidget;
-
+    recordPlayer *player;
     userData *user;
     settingData *setting_data = new settingData();
     Map *map= 0;

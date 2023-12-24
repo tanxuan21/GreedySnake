@@ -31,18 +31,18 @@ Record *Record::readrecord(QString path)
 
         QList<food *> foodArr = QList<food *>();
         food *f ;
-        for(int i = 3;i<l.length();i+=3){
+        for(int i = 3;i<l.length()-1;i+=3){
             f = new food();
             f->x = l[i].toInt();
-            f->y = l[i].toInt();
-            f->value = l[i].toInt();
+            f->y = l[i+1].toInt();
+            f->value = l[i+2].toInt();
             foodArr.push_back(f);
         }
         fram->sb = sb;
         fram->foodArr = foodArr;
         rec->recData.push_back(fram);
     }
-
+    Record::debug(rec);
     return rec;
 }
 

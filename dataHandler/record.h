@@ -10,6 +10,7 @@ struct food
 struct frameData{// 每一帧数据
     snackBody sb;
     QList<food *> foodArr;
+    Map *mp;
 };
 
 class Record

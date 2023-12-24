@@ -9,7 +9,6 @@ userData::userData(const QString &username,const QString &password)
 {
 this->username = username;
 this->password = password;
-
 }
 
 int userData::writeInDataBase()

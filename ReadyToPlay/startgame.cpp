@@ -1,4 +1,5 @@
 #include "startgame.h"
+#include "../game/recordplayer.h"
 #include "begin.h"
 #include <QScrollArea>
 #include "./picksave.h"
@@ -122,13 +123,27 @@ startGame::startGame(QWidget *parent)
             delete record;
         }
         map = user->readMap(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+user->getUsername()+".map");
-        record = user->readrecord(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+user->getUsername()+".rec");
+        //record = user->readrecord(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+user->getUsername()+".rec");
+        record = Record::readrecord(QString(projectPath)+"data/game/"+this->user->getUsername()+"/"+QString::number(MapId)+"/"+user->getUsername()+".rec");
+
         setting_data = Setting::readSettingDataFromFolder(this->user->getPath()+QString::number(MapId)+"/"+user->getUsername()+".config");
         this->setting->writeSettingDataToComponent(setting_data);
-        this->game->setGameOption(MapId,setting_data,map,record);
-        this->game->show();
+//        this->game->setGameOption(MapId,setting_data,map,record);
+//        this->game->show();
+        player = new recordPlayer();
+        this->player->setGameOption(MapId,setting_data,map,record);
+//        Record::debug(record);
+        player->show();
+        // 回放界面到开始游戏界面
+        connect(player,&recordPlayer::rec_backToBegin,this,[=](){
+            qDebug()<<"父窗口接受函数";
+            this->show();
+            player->close();
+            player = nullptr;
+        });
         this->hide();
     });
+
     // 删除存档
     connect(pickSaveWidget,&pickSave::deleteMap,this,[=](int MapId){
         // 要在文件里也删了.不可能只是做个界面罢了.

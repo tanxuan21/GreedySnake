@@ -24,6 +24,7 @@ gameProps::gameProps(gameProps *p,QWidget *parent):
     this->size = p->size;
 
 }
+
 void gameProps::setSize(const int &s)
 {
     this->size = s;

@@ -39,6 +39,7 @@ private slots:
 
 private:
     Ui::Setting *ui;
+
 //    struct settingData{
 //        int gameDifficult = 1;
 //        int foodCount = 1;
