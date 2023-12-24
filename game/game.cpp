@@ -6,6 +6,8 @@
 //#include "./snakeunit.h"
 #include "tool/tool.h"
 #include "gameprops.h"
+#include <random>
+#include <iostream>
 Game::Game(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Game)
@@ -14,7 +16,7 @@ Game::Game(QWidget *parent) :
     this->infoWidget = new gameInfo(this);
     this->infoWidget->show();
     this->infoWidget->move(300,300);
-//    this->infoWidget->setStyleSheet("border: 1px solid black;background-color: white;");
+    //    this->infoWidget->setStyleSheet("border: 1px solid black;background-color: white;");
     // 设置窗口title
     // 现在的难度就是游戏难度.也就是速度.我的窗口是可以resize的.所以它的速度也要动态调整.
     // 要求是难度d = 1/t. t为走过一格的时间.
@@ -23,8 +25,6 @@ Game::Game(QWidget *parent) :
     connect(timer,&QTimer::timeout,this,&Game::update);
     timer->start(700000);
     timer->stop();
-
-
 
     // 游戏信息界面
     // 保存游戏
@@ -35,15 +35,18 @@ Game::Game(QWidget *parent) :
             QPixmap screenShot = ui->gameArea->grab();
             screenShot.save(user->getPath()+"/"+QString::number(this->MapID)+"/img.png");
             map->writeMap(this->snack,this->foodList,this->blockList,this->snackHead,this->snackTail,user->getPath()+"/"+QString::number(this->MapID)+"/"+user->getUsername()+".map");
+            Record::writeRecord(user->getPath()+"/"+QString::number(this->MapID)+"/"+user->getUsername()+".rec",this->record);
+
         }
         // 当前地图不存在.就创建新的.
         else{
-          this->MapID = user->createNewMapFolder();
-          user->saveMap(MapID,this->map,this->setting,this->record);
-          QPixmap screenShot = ui->gameArea->grab();
-          screenShot.save(user->getPath()+"/"+QString::number(this->MapID)+"/img.png");
-          map->writeMap(this->snack,this->foodList,this->blockList,this->snackHead,this->snackTail,user->getPath()+"/"+QString::number(this->MapID)+"/"+user->getUsername()+".map");
-          this->MapID = -1;
+            this->MapID = user->createNewMapFolder();
+            user->saveMap(MapID,this->map,this->setting,this->record);
+            QPixmap screenShot = ui->gameArea->grab();
+            screenShot.save(user->getPath()+"/"+QString::number(this->MapID)+"/img.png");
+            map->writeMap(this->snack,this->foodList,this->blockList,this->snackHead,this->snackTail,user->getPath()+"/"+QString::number(this->MapID)+"/"+user->getUsername()+".map");
+            Record::writeRecord(user->getPath()+"/"+QString::number(this->MapID)+"/"+user->getUsername()+".rec",this->record);
+            this->MapID = -1;
         }
         release();
         emit backToBegin();
@@ -78,7 +81,7 @@ void Game::setGameOption(int MapID, settingData *setting, Map *map, Record *reco
 {
     this->MapID = MapID;
     this->setting = setting;
-    this->record = record;
+//    this->record = record;
     this->map = map;
     //Setting::debugSettingData(this->setting);
     // 初始化全游戏.
@@ -89,7 +92,7 @@ void Game::setGameOption(int MapID, settingData *setting, Map *map, Record *reco
 void Game::init()
 {
 
-// 这一段作为测试使用
+    // 这一段作为测试使用
     // 障碍物坐标
     // QList<QPoint> this->map->blockArry;
     // 蛇
@@ -97,19 +100,19 @@ void Game::init()
     // 食物
     // QList<QPoint> this->map->foodArry;
     // snackBody this->map->snackHead(2,2,Qt::Key_D);
-//    snackBody this->map->snackTail(2,2,Qt::Key_D);
+    //    snackBody this->map->snackTail(2,2,Qt::Key_D);
 
-//    this->map->blockArry.push_back(QPoint(1,1));
-//    this->map->blockArry.push_back(QPoint(0,0));
-//    this->map->blockArry.push_back(QPoint(2,2));
-//    this->map->blockArry.push_back(QPoint(3,3));
+    //    this->map->blockArry.push_back(QPoint(1,1));
+    //    this->map->blockArry.push_back(QPoint(0,0));
+    //    this->map->blockArry.push_back(QPoint(2,2));
+    //    this->map->blockArry.push_back(QPoint(3,3));
 
-//    this->map->snack.push_back((snackBody(2,2,Qt::Key_D)));
-//    this->map->foodArry.push_back(QPoint(9,9));
-//    this->map->foodArry.push_back(QPoint(8,8));
+    //    this->map->snack.push_back((snackBody(2,2,Qt::Key_D)));
+    //    this->map->foodArry.push_back(QPoint(9,9));
+    //    this->map->foodArry.push_back(QPoint(8,8));
 
-//map->debug();
-// 这一段作为测试使用
+    //map->debug();
+    // 这一段作为测试使用
     for(int i = 0;i<this->map->snack.length();i++){
         gameProps *s = new gameProps(ui->gameArea);
         s->move(this->map->snack[i].x*UnitSize,this->map->snack[i].y*UnitSize);
@@ -181,7 +184,7 @@ void Game::init()
         }
     }
     */
-//    snackHead->setColor(QColor(40,0,200));
+    //    snackHead->setColor(QColor(40,0,200));
     // 蛇头蛇尾单独提出来.它是判断游戏动作的重要对象.
 
     // 蛇身的每一个单元都有一个Qt键盘ID值作为方向.
@@ -192,20 +195,20 @@ void Game::init()
     // 队头是数组尾.队尾是数组头.
     //setUnitSize((this->height()-120)/this->setting->mapHeight);// 动态根据尺寸设置地图单元大小.
 
-//    for(int i = 1;i<=10;i++){
-//        qDebug()<<((1/double(i))*1000)/UnitSize;
-//    }
+    //    for(int i = 1;i<=10;i++){
+    //        qDebug()<<((1/double(i))*1000)/UnitSize;
+    //    }
 
     // 蛇的方向置一个默认值
-//    this->headNextX = 1;this->headNextY= 0;
-//    this->tailNextX = 1;this->tailNextY= 0;
-//    snackHead->setDirection(0);
-//    snackTail->setDirection(Qt::Key_D);
+    //    this->headNextX = 1;this->headNextY= 0;
+    //    this->tailNextX = 1;this->tailNextY= 0;
+    //    snackHead->setDirection(0);
+    //    snackTail->setDirection(Qt::Key_D);
     //generalBlockList();
     this->resize();
     this->hasResized = false;
-//    ui->gameArea->setFixedSize(this->UnitSize * setting->mapWidth,this->UnitSize * setting->mapHeight);//尺寸
-//    ui->gameArea->setSize(this->UnitSize);
+    //    ui->gameArea->setFixedSize(this->UnitSize * setting->mapWidth,this->UnitSize * setting->mapHeight);//尺寸
+    //    ui->gameArea->setSize(this->UnitSize);
 }
 void Game::setUnitSize(int size)
 {
@@ -244,7 +247,7 @@ void Game::generalFood()
         do{
             int i = 0,j=0;
             gamePos = QPoint(tool::randomInt(0,setting->mapWidth-1),tool::randomInt(0,setting->mapHeight-1));
-//            qDebug()<<gamePos.x()<<gamePos.y();
+            //            qDebug()<<gamePos.x()<<gamePos.y();
             for(;i < snack.length();i++){
                 if(snack[i] -> getPoint().x() == gamePos.x() && snack[i]->getPoint().y() == gamePos.y()){
                     qDebug()<<"on";
@@ -269,7 +272,32 @@ void Game::generalFood()
         food->move(gamePos.x()*this->UnitSize,gamePos.y()*this->UnitSize);
         food->show();
         foodList.append(food);
-//        qDebug()<<gamePos.x()<<gamePos.y();
+
+        // 使用随机设备作为种子
+        /*
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        // 设置分布范围
+        std::uniform_int_distribution<> dis(1, 100);
+        // 生成随机数
+        int probability = dis(gen);
+//        qDebug()<<"rd="<<rd();
+
+//        qDebug()<<"(setting->food_1_GenerationPro)="<<(setting->food_1_GenerationPro)*100;
+        if (probability < (setting->food_1_GenerationPro*100)) {
+            food->setColor(QColor(80, 190, 230)); // 蓝色，60%概率
+            qDebug()<<"generate food 1,probability="<<setting->food_1_GenerationPro;
+        } else if (probability < (setting->food_1_GenerationPro)*100+(setting->food_2_GenerationPro)*100) {
+            food->setColor(QColor(180, 80, 230)); // 紫色，30%概率
+        } else {
+            food->setColor(QColor(220, 255, 0)); // 黄色，10%概率
+        }
+*/
+//        food->show();
+//        foodList.append(food);
+        //        qDebug()<<gamePos.x()<<gamePos.y();
+        //        qDebug()<<gamePos.x()<<gamePos.y();
     }
 }
 
@@ -334,6 +362,24 @@ void Game::calculateNextX_Y()
 
     // 根据读取的键盘方向设置蛇头下一帧的方向
     QPoint dir = KeydirToDirection(this->snackHead);
+
+    // 保存存档
+
+    frameData *fram = new frameData();// 创建一个帧对象.保存当前帧的键盘信息和食物信息
+    fram->sb.x = snackHead->getPoint().x();
+    fram->sb.y = snackHead->getPoint().y();
+    fram->sb.dir = snackHead->getDirection();
+
+    for(int i = 0;i<foodList.length();i++){
+        food *fd = new food();
+        fd->value = 1;
+        fd->x = foodList[i]->getPoint().x();
+        fd->y = foodList[i]->getPoint().y();
+        fram->foodArr.push_back(fd);
+    }
+    this->record->recData.push_back(fram);
+
+    // 边界条件的判断
     if(dir.x()!=0 || dir.y()!=0){
         this->headNextX = dir.x();
         this->headNextY = dir.y();
@@ -343,15 +389,15 @@ void Game::calculateNextX_Y()
         this->snackTail->setPos(snack[0]->getPoint());
     }
     this->hasResized = false;
-//        //qDebug()<<p.x()<<p.y()<<"|"<<snackTail->getPoint().x()<<snackTail->getPoint().y();
-//        qDebug()<<snackTail->getDirection()<<"-"<<snackTail->getPoint().x()<<snackTail->getPoint().y();
+    //        //qDebug()<<p.x()<<p.y()<<"|"<<snackTail->getPoint().x()<<snackTail->getPoint().y();
+    //        qDebug()<<snackTail->getDirection()<<"-"<<snackTail->getPoint().x()<<snackTail->getPoint().y();
 
-//        for(int i = 0;i<snack.length();i++){
-//           qDebug()<<snack[i]->getDirection()<<"-"<<snack[i]->getPoint().x()<<snack[i]->getPoint().y();
+    //        for(int i = 0;i<snack.length();i++){
+    //           qDebug()<<snack[i]->getDirection()<<"-"<<snack[i]->getPoint().x()<<snack[i]->getPoint().y();
 
-//        }
-//        qDebug()<<snackHead->getDirection()<<"-"<<snackHead->getPoint().x()<<snackHead->getPoint().y();
-//        qDebug()<<"============";
+    //        }
+    //        qDebug()<<snackHead->getDirection()<<"-"<<snackHead->getPoint().x()<<snackHead->getPoint().y();
+    //        qDebug()<<"============";
 
 }
 // =======================工具函数=========================
@@ -621,12 +667,12 @@ void Game::keyPressEvent(QKeyEvent *event)
 
 void Game::paintEvent(QPaintEvent *)
 {
-//    QPainter painter = QPainter(ui->gameArea);
-//    painter.setBrush(Qt::white);
-//    painter.drawRect(0,0,100,100);
-//    QPainter painter1 = QPainter(this);
-//    painter1.setBrush(Qt::white);
-//    painter1.drawRect(400,400,100,100);
+    //    QPainter painter = QPainter(ui->gameArea);
+    //    painter.setBrush(Qt::white);
+    //    painter.drawRect(0,0,100,100);
+    //    QPainter painter1 = QPainter(this);
+    //    painter1.setBrush(Qt::white);
+    //    painter1.drawRect(400,400,100,100);
 }
 
 void Game::resizeEvent(QResizeEvent *event)

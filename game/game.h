@@ -41,7 +41,7 @@ private:
     settingData *setting;
     int MapID  = -1;
     Map *map;
-    Record *record;
+    Record *record = new Record();
     bool lasttouchingEdg = false;
     bool touchingEdg  =false;// 是否碰到每个格子边.因为游戏帧过于密集,可能在边界重复调用update里面的函数.需要做防抖.
     bool hasResized = false;// 继续(开始)是否resize过.

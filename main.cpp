@@ -7,9 +7,14 @@
 #include "./demo.h"
 #include "dataHandler/map.h"
 #include "./tool/tool.h"
+#include "./dataHandler/record.h"
 #include <QFile>
 #include <QScreen>
 #include <QDateTime>
+QString debugPath = "/Users/tanxuan21/Desktop/homework/junior-high/Programming/src/GreedySnake/example.txt";
+
+QString debugPath1 = "/Users/tanxuan21/Desktop/homework/junior-high/Programming/src/GreedySnake/example1.txt";
+
 int main(int argc, char *argv[])
 {
 //    userData user("txdnajflkb","123");
@@ -46,6 +51,10 @@ int main(int argc, char *argv[])
 //    m->debug();// 正常
 
 //    qDebug()<<(tool::randomInt(0,0));
+    //
+    Record *rec = Record::readrecord(debugPath);
+    Record::debug(rec);
+    Record::writeRecord(debugPath1,rec);
     QApplication a(argc, argv);
     login w;
     // Demo w;
